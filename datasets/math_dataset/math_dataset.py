@@ -191,17 +191,14 @@ _DATASET_VERSION = "mathematics_dataset-v1.0"
 
 def _generate_builder_configs():
     """Generate configs with different subsets of mathematics dataset."""
-    configs = []
-    for module in sorted(set(_MODULES)):
-        configs.append(
-            datasets.BuilderConfig(
-                name=module,
-                version=datasets.Version("1.0.0"),
-                description=_DESCRIPTION,
-            )
+    return [
+        datasets.BuilderConfig(
+            name=module,
+            version=datasets.Version("1.0.0"),
+            description=_DESCRIPTION,
         )
-
-    return configs
+        for module in sorted(set(_MODULES))
+    ]
 
 
 class MathDataset(datasets.GeneratorBasedBuilder):
@@ -243,7 +240,7 @@ class MathDataset(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
 
         directory = dl_manager.download_and_extract(_DATA_URL)
-        config = self.config.name + ".txt"
+        config = f"{self.config.name}.txt"
 
         return [
             datasets.SplitGenerator(

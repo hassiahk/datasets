@@ -186,7 +186,8 @@ class IdNergritCorpus(datasets.GeneratorBasedBuilder):
                 name=datasets.Split.TRAIN,
                 gen_kwargs={
                     "filepath": os.path.join(
-                        data_dir, "nergrit-corpus/{}/data/train_corrected.txt".format(self.config.name)
+                        data_dir,
+                        f"nergrit-corpus/{self.config.name}/data/train_corrected.txt",
                     ),
                     "split": "train",
                 },
@@ -195,7 +196,8 @@ class IdNergritCorpus(datasets.GeneratorBasedBuilder):
                 name=datasets.Split.TEST,
                 gen_kwargs={
                     "filepath": os.path.join(
-                        data_dir, "nergrit-corpus/{}/data/test_corrected.txt".format(self.config.name)
+                        data_dir,
+                        f"nergrit-corpus/{self.config.name}/data/test_corrected.txt",
                     ),
                     "split": "test",
                 },
@@ -204,7 +206,8 @@ class IdNergritCorpus(datasets.GeneratorBasedBuilder):
                 name=datasets.Split.VALIDATION,
                 gen_kwargs={
                     "filepath": os.path.join(
-                        data_dir, "nergrit-corpus/{}/data/valid_corrected.txt".format(self.config.name)
+                        data_dir,
+                        f"nergrit-corpus/{self.config.name}/data/valid_corrected.txt",
                     ),
                     "split": "dev",
                 },
@@ -219,20 +222,19 @@ class IdNergritCorpus(datasets.GeneratorBasedBuilder):
             ner_tags = []
             for line in f:
                 splits = line.strip().split()
-                if len(splits) != 2:
-                    if tokens:
-                        assert len(tokens) == len(ner_tags), "word len doesn't match label length"
-                        yield guid, {
-                            "id": str(guid),
-                            "tokens": tokens,
-                            "ner_tags": ner_tags,
-                        }
-                        guid += 1
-                        tokens = []
-                        ner_tags = []
-                else:
+                if len(splits) == 2:
                     tokens.append(splits[0])
                     ner_tags.append(splits[1].rstrip())
+                elif tokens:
+                    assert len(tokens) == len(ner_tags), "word len doesn't match label length"
+                    yield guid, {
+                        "id": str(guid),
+                        "tokens": tokens,
+                        "ner_tags": ner_tags,
+                    }
+                    guid += 1
+                    tokens = []
+                    ner_tags = []
             # last example
             yield guid, {
                 "id": str(guid),

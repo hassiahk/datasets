@@ -140,9 +140,7 @@ class CivilComments(datasets.GeneratorBasedBuilder):
         with open(filename, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                example = {}
-                example["text"] = row["comment_text"]
-                example["toxicity"] = float(row[toxicity_label])
+                example = {"text": row["comment_text"], "toxicity": float(row[toxicity_label])}
                 for label in ["severe_toxicity", "obscene", "threat", "insult", "identity_attack", "sexual_explicit"]:
                     example[label] = float(row[label])
                 yield row["id"], example

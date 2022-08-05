@@ -70,8 +70,7 @@ class CodeXGlueCcCodeCompletionLine(datasets.GeneratorBasedBuilder):
             self.child = CLASS_MAPPING[info["class_name"]](info)
         else:
             raise RuntimeError(f"Unknown python class for dataset configuration {name}")
-        ret = self.child._info()
-        return ret
+        return self.child._info()
 
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
         return self.child._split_generators(dl_manager=dl_manager)

@@ -117,7 +117,7 @@ class DBRD(datasets.GeneratorBasedBuilder):
                 for id_, file in enumerate(files[key]):
                     filepath = os.path.join(directory, key, file)
                     with open(filepath, encoding="UTF-8") as f:
-                        yield key + "_" + str(id_), {"text": f.read(), "label": key}
+                        yield (f"{key}_{str(id_)}", {"text": f.read(), "label": key})
         else:
             unsup_files = sorted(os.listdir(directory))
             for id_, file in enumerate(unsup_files):

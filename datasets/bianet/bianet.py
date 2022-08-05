@@ -72,14 +72,10 @@ class BianetConfig(datasets.BuilderConfig):
           language_pair: pair of languages that will be used for translation.
           **kwargs: keyword arguments forwarded to super.
         """
-        name = "%s_to_%s" % (language_pair[0], language_pair[1])
+        name = f"{language_pair[0]}_to_{language_pair[1]}"
 
-        description = ("Translation dataset from %s to %s or %s to %s.") % (
-            language_pair[0],
-            language_pair[1],
-            language_pair[1],
-            language_pair[0],
-        )
+        description = f"Translation dataset from {language_pair[0]} to {language_pair[1]} or {language_pair[1]} to {language_pair[0]}."
+
         super(BianetConfig, self).__init__(
             name=name, description=description, version=datasets.Version(_VERSION, ""), **kwargs
         )
@@ -138,11 +134,10 @@ class Bianet(datasets.GeneratorBasedBuilder):
             for sentence_counter, (x, y) in enumerate(zip(f1, f2)):
                 x = x.strip()
                 y = y.strip()
-                result = (
+                yield (
                     sentence_counter,
                     {
                         "id": str(sentence_counter),
                         "translation": {lang1: x, lang2: y},
                     },
                 )
-                yield result

@@ -53,7 +53,10 @@ class MT_Eng_ViConfig(datasets.BuilderConfig):
           **kwargs: keyword arguments forwarded to super.
         """
 
-        description = ("Translation dataset from %s to %s") % (language_pair[0], language_pair[1])
+        description = (
+            f"Translation dataset from {language_pair[0]} to {language_pair[1]}"
+        )
+
         super(MT_Eng_ViConfig, self).__init__(
             description=description,
             version=datasets.Version("1.0.0"),

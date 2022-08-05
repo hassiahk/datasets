@@ -16,6 +16,7 @@
 """AmbigQA: Answering Ambiguous Open-domain Questions"""
 
 
+
 import json
 import os
 
@@ -40,10 +41,7 @@ _HOMEPAGE = "https://nlp.cs.washington.edu/ambigqa/"
 _LICENSE = "CC BY-SA 3.0"
 
 _URL = "https://nlp.cs.washington.edu/ambigqa/data/"
-_URLS = {
-    "light": _URL + "ambignq_light.zip",
-    "full": _URL + "ambignq.zip",
-}
+_URLS = {"light": f"{_URL}ambignq_light.zip", "full": f"{_URL}ambignq.zip"}
 
 
 class AmbigQa(datasets.GeneratorBasedBuilder):
@@ -99,7 +97,7 @@ class AmbigQa(datasets.GeneratorBasedBuilder):
                 "nq_answer": datasets.features.Sequence(datasets.Value("string")),
                 "nq_doc_title": datasets.Value("string"),
             }
-            features_dict.update(detail_features)
+            features_dict |= detail_features
 
         features = datasets.Features(features_dict)
 

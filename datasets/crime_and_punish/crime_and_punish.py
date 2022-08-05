@@ -58,17 +58,16 @@ class CrimeAndPunish(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
 
-        if self.config.name == "crime-and-punish":
-            data = dl_manager.download_and_extract(self.config.data_url)
+        if self.config.name != "crime-and-punish":
+            raise ValueError(f"{self.config.name} does not exist")
+        data = dl_manager.download_and_extract(self.config.data_url)
 
-            return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TRAIN,
-                    gen_kwargs={"data_file": data, "split": "train"},
-                ),
-            ]
-        else:
-            raise ValueError("{} does not exist".format(self.config.name))
+        return [
+            datasets.SplitGenerator(
+                name=datasets.Split.TRAIN,
+                gen_kwargs={"data_file": data, "split": "train"},
+            ),
+        ]
 
     def _generate_examples(self, data_file, split):
 

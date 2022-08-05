@@ -164,66 +164,68 @@ class BreakData(datasets.GeneratorBasedBuilder):
         qdmr_high_level = os.path.join(data_dir, "QDMR-high-level")
         qdmr = os.path.join(data_dir, "QDMR")
         logical = os.path.join(data_dir, "logical-forms")
-        if self.config.name == "QDMR" or self.config.name == "QDMR-lexicon":
+        if self.config.name in ["QDMR", "QDMR-lexicon"]:
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
-                        "filepath": os.path.join(qdmr, "train.csv")
-                        if not self.config.lexicon_tokens
-                        else os.path.join(qdmr, "train_lexicon_tokens.json")
+                        "filepath": os.path.join(qdmr, "train_lexicon_tokens.json")
+                        if self.config.lexicon_tokens
+                        else os.path.join(qdmr, "train.csv")
                     },
                 ),
                 datasets.SplitGenerator(
                     name=datasets.Split.VALIDATION,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
-                        "filepath": os.path.join(qdmr, "dev.csv")
-                        if not self.config.lexicon_tokens
-                        else os.path.join(qdmr, "dev_lexicon_tokens.json")
+                        "filepath": os.path.join(qdmr, "dev_lexicon_tokens.json")
+                        if self.config.lexicon_tokens
+                        else os.path.join(qdmr, "dev.csv")
                     },
                 ),
                 datasets.SplitGenerator(
                     name=datasets.Split.TEST,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
-                        "filepath": os.path.join(qdmr, "test.csv")
-                        if not self.config.lexicon_tokens
-                        else os.path.join(qdmr, "test_lexicon_tokens.json")
+                        "filepath": os.path.join(qdmr, "test_lexicon_tokens.json")
+                        if self.config.lexicon_tokens
+                        else os.path.join(qdmr, "test.csv")
                     },
                 ),
             ]
-        elif self.config.name == "QDMR-high-level" or self.config.name == "QDMR-high-level-lexicon":
+
+        elif self.config.name in ["QDMR-high-level", "QDMR-high-level-lexicon"]:
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
-                        "filepath": os.path.join(qdmr_high_level, "train.csv")
-                        if not self.config.lexicon_tokens
-                        else os.path.join(qdmr_high_level, "train_lexicon_tokens.json")
+                        "filepath": os.path.join(
+                            qdmr_high_level, "train_lexicon_tokens.json"
+                        )
+                        if self.config.lexicon_tokens
+                        else os.path.join(qdmr_high_level, "train.csv")
                     },
                 ),
                 datasets.SplitGenerator(
                     name=datasets.Split.VALIDATION,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
-                        "filepath": os.path.join(qdmr_high_level, "dev.csv")
-                        if not self.config.lexicon_tokens
-                        else os.path.join(qdmr_high_level, "dev_lexicon_tokens.json")
+                        "filepath": os.path.join(
+                            qdmr_high_level, "dev_lexicon_tokens.json"
+                        )
+                        if self.config.lexicon_tokens
+                        else os.path.join(qdmr_high_level, "dev.csv")
                     },
                 ),
                 datasets.SplitGenerator(
                     name=datasets.Split.TEST,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
-                        "filepath": os.path.join(qdmr_high_level, "test.csv")
-                        if not self.config.lexicon_tokens
-                        else os.path.join(qdmr_high_level, "test_lexicon_tokens.json")
+                        "filepath": os.path.join(
+                            qdmr_high_level, "test_lexicon_tokens.json"
+                        )
+                        if self.config.lexicon_tokens
+                        else os.path.join(qdmr_high_level, "test.csv")
                     },
                 ),
             ]
+
         elif self.config.name == "logical-forms":
             return [
                 datasets.SplitGenerator(
@@ -247,15 +249,10 @@ class BreakData(datasets.GeneratorBasedBuilder):
         """Yields examples."""
         # TODO(break_data): Yields (key, example) tuples from the dataset
         with open(filepath, encoding="utf-8") as f:
-            if (
-                self.config.name == "QDMR-high-level"
-                or self.config.name == "QDMR"
-                or self.config.name == "logical-forms"
-            ):
+            if self.config.name in ["QDMR-high-level", "QDMR", "logical-forms"]:
                 data = csv.DictReader(f)
-                for id_, row in enumerate(data):
-                    yield id_, row
-            elif self.config.name == "QDMR-high-level-lexicon" or self.config.name == "QDMR-lexicon":
+                yield from enumerate(data)
+            elif self.config.name in ["QDMR-high-level-lexicon", "QDMR-lexicon"]:
                 for id_, row in enumerate(f):
                     data = json.loads(row)
                     yield id_, data

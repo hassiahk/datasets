@@ -121,7 +121,7 @@ def _get_url_hashes(path):
 def _get_hash_from_path(p):
     """Extract hash from path."""
     basename = os.path.basename(p)
-    return basename[0 : basename.find(".story")]
+    return basename[:basename.find(".story")]
 
 
 def _find_files(dl_paths, publisher, url_dict):
@@ -134,11 +134,11 @@ def _find_files(dl_paths, publisher, url_dict):
         logger.fatal("Unsupported publisher: %s", publisher)
     files = sorted(os.listdir(top_dir))
 
-    ret_files = []
-    for p in files:
-        if _get_hash_from_path(p) in url_dict:
-            ret_files.append(os.path.join(top_dir, p))
-    return ret_files
+    return [
+        os.path.join(top_dir, p)
+        for p in files
+        if _get_hash_from_path(p) in url_dict
+    ]
 
 
 def _subset_filenames(dl_paths, split):
@@ -167,8 +167,7 @@ END_TOKENS = [".", "!", "?", "...", "'", "`", '"', DM_SINGLE_CLOSE_QUOTE, DM_DOU
 def _read_text_file(text_file):
     lines = []
     with open(text_file, "r", encoding="utf-8") as f:
-        for line in f:
-            lines.append(line.strip())
+        lines.extend(line.strip() for line in f)
     return lines
 
 
@@ -191,9 +190,7 @@ def _get_art_abs(story_file, tfds_version):
             return line
         if not line:
             return line
-        if line[-1] in END_TOKENS:
-            return line
-        return line + " ."
+        return line if line[-1] in END_TOKENS else f"{line} ."
 
     lines = [fix_missing_period(line) for line in lines]
 

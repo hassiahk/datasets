@@ -73,5 +73,4 @@ class KELM(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         with open(filepath, "r", encoding="utf-8") as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter="\t", fieldnames=["triple", "sentence"])
-            for irow, row in enumerate(csv_reader):
-                yield irow, row
+            yield from enumerate(csv_reader)

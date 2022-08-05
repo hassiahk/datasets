@@ -155,7 +155,7 @@ class DealOrNoDialog(datasets.GeneratorBasedBuilder):
 
 
 def get_tag(tokens, tag):
-    return " ".join(tokens[tokens.index("<" + tag + ">") + 1 : tokens.index("</" + tag + ">")])
+    return " ".join(tokens[tokens.index(f"<{tag}>") + 1:tokens.index(f"</{tag}>")])
 
 
 def get_count_value(sequence):

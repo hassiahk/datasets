@@ -125,7 +125,7 @@ class Atomic(datasets.GeneratorBasedBuilder):
                 row = row.replace('"[', "[").replace(']"', "]")
                 sent, rest = row.split("[", 1)
                 sent = sent.strip(', "')
-                rest = "[" + rest
+                rest = f"[{rest}"
                 rest = rest.replace('""', '"').replace('\\\\"]', '"]')
                 rest = rest.split(",")
                 rest[-1] = '"' + rest[-1].strip() + '"'

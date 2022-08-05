@@ -92,11 +92,11 @@ class Cifar10(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, split):
         """This function returns the examples in the raw (text) form."""
 
-        if split == "train":
-            batches = ["data_batch_1", "data_batch_2", "data_batch_3", "data_batch_4", "data_batch_5"]
-
         if split == "test":
             batches = ["test_batch"]
+
+        elif split == "train":
+            batches = ["data_batch_1", "data_batch_2", "data_batch_3", "data_batch_4", "data_batch_5"]
 
         for batch in batches:
 

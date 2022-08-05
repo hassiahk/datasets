@@ -76,9 +76,7 @@ def _is_punctuation(char):
     if (cp >= 33 and cp <= 47) or (cp >= 58 and cp <= 64) or (cp >= 91 and cp <= 96) or (cp >= 123 and cp <= 126):
         return True
     cat = unicodedata.category(char)
-    if cat.startswith("P"):
-        return True
-    return False
+    return bool(cat.startswith("P"))
 
 
 # method extracted from https://github.com/huggingface/transformers/blob/master/src/transformers/tokenization_utils.py#L53-L62
@@ -86,12 +84,10 @@ def _is_whitespace(char):
     """Checks whether `char` is a whitespace character."""
     # \t, \n, and \r are technically control characters but we treat them
     # as whitespace since they are generally considered as such.
-    if char == " " or char == "\t" or char == "\n" or char == "\r":
+    if char in [" ", "\t", "\n", "\r"]:
         return True
     cat = unicodedata.category(char)
-    if cat == "Zs":
-        return True
-    return False
+    return cat == "Zs"
 
 
 class Token:
@@ -121,7 +117,7 @@ def reconstruct_text_from_tokens(tokens: List[Token], include_last_tail: bool = 
             if i < len(tokens) - 1 or include_last_tail:
                 yield token.tail
 
-    return "".join(piece for piece in text_generator(tokens))
+    return "".join(text_generator(tokens))
 
 
 def tokenize(text: str) -> Tuple[List[Token], List[int]]:
@@ -292,16 +288,11 @@ class HAREM(datasets.GeneratorBasedBuilder):
                     reconstructed_text = reconstruct_text_from_tokens(doc_tokens[start_token : (end_token + 1)])
                     assert (
                         entity_text.strip() == reconstructed_text
-                    ), "Entity text and reconstructed text are not equal: %s != %s" % (
-                        entity_text,
-                        reconstructed_text,
-                    )
+                    ), f"Entity text and reconstructed text are not equal: {entity_text} != {reconstructed_text}"
+
 
                     for token_index in range(start_token, end_token + 1):
-                        if token_index == start_token:
-                            tag = "B-" + entity_type
-                        else:
-                            tag = "I-" + entity_type
+                        tag = f"B-{entity_type}" if token_index == start_token else f"I-{entity_type}"
                         set_label(token_index, tag)
 
                 yield id_, {

@@ -203,10 +203,7 @@ class Opus100(datasets.GeneratorBasedBuilder):
         lang_pair = self.config.language_pair
         src_tag, tgt_tag = lang_pair.split("-")
 
-        domain = "supervised"
-        if lang_pair in _0shotLanguagePairs:
-            domain = "zero-shot"
-
+        domain = "zero-shot" if lang_pair in _0shotLanguagePairs else "supervised"
         if domain == "supervised":
             dl_dir = dl_manager.download_and_extract(_URL["supervised"].format(lang_pair))
         elif domain == "zero-shot":

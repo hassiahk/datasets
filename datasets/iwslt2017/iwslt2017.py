@@ -125,18 +125,15 @@ class IWSLT217(datasets.GeneratorBasedBuilder):
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "source_files": [
                         os.path.join(
-                            data_dir,
-                            "train.tags.{}.{}".format(self.config.pair, source),
+                            data_dir, f"train.tags.{self.config.pair}.{source}"
                         )
                     ],
                     "target_files": [
                         os.path.join(
-                            data_dir,
-                            "train.tags.{}.{}".format(self.config.pair, target),
+                            data_dir, f"train.tags.{self.config.pair}.{target}"
                         )
                     ],
                     "split": "train",
@@ -144,19 +141,18 @@ class IWSLT217(datasets.GeneratorBasedBuilder):
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "source_files": [
                         os.path.join(
                             data_dir,
-                            "IWSLT17.TED.tst{}.{}.{}.xml".format(year, self.config.pair, source),
+                            f"IWSLT17.TED.tst{year}.{self.config.pair}.{source}.xml",
                         )
                         for year in years
                     ],
                     "target_files": [
                         os.path.join(
                             data_dir,
-                            "IWSLT17.TED.tst{}.{}.{}.xml".format(year, self.config.pair, target),
+                            f"IWSLT17.TED.tst{year}.{self.config.pair}.{target}.xml",
                         )
                         for year in years
                     ],
@@ -165,18 +161,17 @@ class IWSLT217(datasets.GeneratorBasedBuilder):
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
                     "source_files": [
                         os.path.join(
                             data_dir,
-                            "IWSLT17.TED.dev2010.{}.{}.xml".format(self.config.pair, source),
+                            f"IWSLT17.TED.dev2010.{self.config.pair}.{source}.xml",
                         )
                     ],
                     "target_files": [
                         os.path.join(
                             data_dir,
-                            "IWSLT17.TED.dev2010.{}.{}.xml".format(self.config.pair, target),
+                            f"IWSLT17.TED.dev2010.{self.config.pair}.{target}.xml",
                         )
                     ],
                     "split": "dev",
@@ -196,18 +191,17 @@ class IWSLT217(datasets.GeneratorBasedBuilder):
                         target_row = target_row.strip()
 
                         if source_row.startswith("<"):
-                            if source_row.startswith("<seg"):
-                                # Remove <seg id="1">.....</seg>
-                                # Very simple code instead of regex or xml parsing
-                                part1 = source_row.split(">")[1]
-                                source_row = part1.split("<")[0]
-                                part1 = target_row.split(">")[1]
-                                target_row = part1.split("<")[0]
-
-                                source_row = source_row.strip()
-                                target_row = target_row.strip()
-                            else:
+                            if not source_row.startswith("<seg"):
                                 continue
 
+                            # Remove <seg id="1">.....</seg>
+                            # Very simple code instead of regex or xml parsing
+                            part1 = source_row.split(">")[1]
+                            source_row = part1.split("<")[0]
+                            part1 = target_row.split(">")[1]
+                            target_row = part1.split("<")[0]
+
+                            source_row = source_row.strip()
+                            target_row = target_row.strip()
                         yield id_, {"translation": {source: source_row, target: target_row}}
                         id_ += 1

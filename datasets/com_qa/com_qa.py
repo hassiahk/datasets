@@ -1,6 +1,7 @@
 """TODO(com_qa): Add a description here."""
 
 
+
 import json
 
 import datasets
@@ -41,9 +42,9 @@ temporal or measurable quantities, TIMEX3 and the International System of Units 
 
 _URL = "https://qa.mpi-inf.mpg.de/comqa/"
 _URLS = {
-    "train": _URL + "comqa_train.json",
-    "dev": _URL + "comqa_dev.json",
-    "test": _URL + "comqa_test.json",
+    "train": f"{_URL}comqa_train.json",
+    "dev": f"{_URL}comqa_dev.json",
+    "test": f"{_URL}comqa_test.json",
 }
 
 

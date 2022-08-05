@@ -69,8 +69,7 @@ class CodeXGlueTtTextToTextImpl(Child):
             # Read a single line from each file
             entries = {k: files[k].readline() for k in file_paths}
 
-            empty = self.check_empty(entries)
-            if empty:
+            if empty := self.check_empty(entries):
                 # We are done: end of files
                 return
 
@@ -97,8 +96,7 @@ class CodeXGlueTtTextToText(datasets.GeneratorBasedBuilder):
             self.child = CLASS_MAPPING[info["class_name"]](info)
         else:
             raise RuntimeError(f"Unknown python class for dataset configuration {name}")
-        ret = self.child._info()
-        return ret
+        return self.child._info()
 
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
         return self.child._split_generators(dl_manager=dl_manager)

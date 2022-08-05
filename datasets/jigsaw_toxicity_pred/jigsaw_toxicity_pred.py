@@ -80,10 +80,9 @@ class JigsawToxicityPred(datasets.GeneratorBasedBuilder):
 
         if not os.path.exists(data_dir):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('jigsaw_toxicity_pred', data_dir=...)`. Manual download instructions: {}".format(
-                    data_dir, self.manual_download_instructions
-                )
+                f"{data_dir} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('jigsaw_toxicity_pred', data_dir=...)`. Manual download instructions: {self.manual_download_instructions}"
             )
+
 
         return [
             datasets.SplitGenerator(
@@ -118,9 +117,7 @@ class JigsawToxicityPred(datasets.GeneratorBasedBuilder):
             df4 = pd.read_csv(train_path)
 
         for _, row in df4.iterrows():
-            example = {}
-            example["comment_text"] = row["comment_text"]
-
+            example = {"comment_text": row["comment_text"]}
             for label in ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]:
                 if row[label] != -1:
                     example[label] = int(row[label])

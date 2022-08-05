@@ -93,9 +93,12 @@ class ParaPatConfig(datasets.BuilderConfig):
 
     def __init__(self, language_pair=(None, None), url=None, **kwargs):
         """BuilderConfig for ParaPat."""
-        name = "%s-%s" % (language_pair[0], language_pair[1])
+        name = f"{language_pair[0]}-{language_pair[1]}"
 
-        description = ("Translation dataset from %s to %s") % (language_pair[0], language_pair[1])
+        description = (
+            f"Translation dataset from {language_pair[0]} to {language_pair[1]}"
+        )
+
 
         source, target = language_pair
         super(ParaPatConfig, self).__init__(

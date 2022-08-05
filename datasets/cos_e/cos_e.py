@@ -17,6 +17,7 @@
 """Commonsense Explanations (CoS-E) Dataset."""
 
 
+
 import json
 
 import datasets
@@ -48,9 +49,9 @@ _CQA_V1_11_URL_TRAIN = "https://s3.amazonaws.com/commensenseqa/train_rand_split.
 _CQA_V1_11_URL_DEV = "https://s3.amazonaws.com/commensenseqa/dev_rand_split.jsonl"
 _CQA_V1_11_URL_TEST = "https://s3.amazonaws.com/commensenseqa/test_rand_split_no_answers.jsonl"
 
-_CQA_V1_0_URL_TRAIN = _COS_E_URL + "v1.0/train_rand_split.jsonl"
-_CQA_V1_0_URL_DEV = _COS_E_URL + "v1.0/dev_rand_split.jsonl"
-_CQA_V1_0_URL_TEST = _COS_E_URL + "v1.0/test_rand_split_no_answers.jsonl"
+_CQA_V1_0_URL_TRAIN = f"{_COS_E_URL}v1.0/train_rand_split.jsonl"
+_CQA_V1_0_URL_DEV = f"{_COS_E_URL}v1.0/dev_rand_split.jsonl"
+_CQA_V1_0_URL_TEST = f"{_COS_E_URL}v1.0/test_rand_split_no_answers.jsonl"
 
 
 def _download_and_index_cqa(dl_manager, name):
@@ -69,7 +70,7 @@ def _download_and_index_cqa(dl_manager, name):
     cqa_complete = []
     for split in cqa_splits:
         with open(downloaded_files[split], encoding="utf-8") as f:
-            for _, line in enumerate(f):
+            for line in f:
                 d = json.loads(line)
                 cqa_complete.append(d)
 
@@ -149,18 +150,22 @@ class CosE(datasets.GeneratorBasedBuilder):
         if self.config.name == "v1.11":
             files = dl_manager.download_and_extract(
                 {
-                    "dev": [_COS_E_URL + "v1.11/cose_dev_v1.11_processed.jsonl"],
-                    "train": [_COS_E_URL + "v1.11/cose_train_v1.11_processed.jsonl"],
+                    "dev": [f"{_COS_E_URL}v1.11/cose_dev_v1.11_processed.jsonl"],
+                    "train": [
+                        f"{_COS_E_URL}v1.11/cose_train_v1.11_processed.jsonl"
+                    ],
                 }
             )
+
 
         elif self.config.name == "v1.0":
             files = dl_manager.download_and_extract(
                 {
-                    "dev": [_COS_E_URL + "v1.0/cose_dev_v1.0_processed.jsonl"],
-                    "train": [_COS_E_URL + "v1.0/cose_train_v1.0_processed.jsonl"],
+                    "dev": [f"{_COS_E_URL}v1.0/cose_dev_v1.0_processed.jsonl"],
+                    "train": [f"{_COS_E_URL}v1.0/cose_train_v1.0_processed.jsonl"],
                 }
             )
+
         else:
             raise ValueError("Unknown config name")
         # We use the CoS-E/CQA dev set as our validation set.

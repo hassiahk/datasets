@@ -74,7 +74,7 @@ class MsrTextCompression(datasets.GeneratorBasedBuilder):
             "ratings": datasets.Sequence(datasets.Value("int64")),
         }
         targets = {"targets": datasets.Sequence(target)}
-        feature_dict = {**source, **targets}
+        feature_dict = source | targets
 
         return datasets.DatasetInfo(
             description=_DESCRIPTION,
@@ -90,10 +90,9 @@ class MsrTextCompression(datasets.GeneratorBasedBuilder):
         data_dir = os.path.abspath(os.path.expanduser(dl_manager.manual_dir))
         if not os.path.exists(data_dir):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('msr_text_compression', data_dir=...)` per the manual download instructions: {}".format(
-                    data_dir, self.manual_download_instructions
-                )
+                f"{data_dir} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('msr_text_compression', data_dir=...)` per the manual download instructions: {self.manual_download_instructions}"
             )
+
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,

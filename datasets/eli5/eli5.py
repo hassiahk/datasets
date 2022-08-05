@@ -63,11 +63,10 @@ def _gather_dump_urls(base_url, mode, dl_manager):
     from bs4 import BeautifulSoup
 
     page_path = dl_manager.download(_REDDIT_URL + mode)
-    page_f = open(page_path, encoding="utf-8")
-    page_content = page_f.read()
-    page_f.close()
+    with open(page_path, encoding="utf-8") as page_f:
+        page_content = page_f.read()
     soup = BeautifulSoup(page_content, "lxml")
-    files = [it for it in soup.find_all(attrs={"class": "file"})]
+    files = list(soup.find_all(attrs={"class": "file"}))
     f_urls = [
         tg.find_all(lambda x: x.has_attr("href"))[0]["href"]
         for tg in files
@@ -90,8 +89,12 @@ def _valid_line(dct, mode):
         and dct["author"] != "AutoModerator"
         and dct["parent_id"] == dct["link_id"]
     )
-    res = dct.get("num_comments", 1) > 0 and dct.get("score", 0) and dct.get("score", 0) >= 2 and top_level
-    return res
+    return (
+        dct.get("num_comments", 1) > 0
+        and dct.get("score", 0)
+        and dct.get("score", 0) >= 2
+        and top_level
+    )
 
 
 def _open_compressed_file(f_name, f_type):
@@ -122,14 +125,14 @@ def _download_and_select_lines(dl_manager, f_url, mode, st_time):
     lines = dict([(name, []) for name in _SUB_REDDITS])
     for line in f:
         line_dct = json.loads(line)
-        if any([line_dct.get("subreddit", "") == name for name in _SUB_REDDITS]):
+        if any(line_dct.get("subreddit", "") == name for name in _SUB_REDDITS):
             lines[line_dct["subreddit"]] += [line_dct]
     f.close()
     if f_url.split(".")[-1] == "zst":
         fh.close()
     os.remove(f_downloaded_path)
-    os.remove(f_downloaded_path + ".json")
-    os.remove(f_downloaded_path + ".lock")
+    os.remove(f"{f_downloaded_path}.json")
+    os.remove(f"{f_downloaded_path}.lock")
     logger.info("tokenizing and selecting {} {:.2f}".format(f_url, time() - st_time))
     processed_items = dict([(name, []) for name in _SUB_REDDITS])
     if mode == "submissions":
@@ -139,16 +142,22 @@ def _download_and_select_lines(dl_manager, f_url, mode, st_time):
     for name in _SUB_REDDITS:
         for line in lines[name]:
             if _valid_line(line, mode):
-                reddit_res = {}
-                for k in key_list:
-                    if k in ["title", "selftext", "body"]:
-                        reddit_res[k] = _extract_urls_from_text(line[k])
-                    else:
-                        reddit_res[k] = line[k]
+                reddit_res = {
+                    k: _extract_urls_from_text(line[k])
+                    if k in ["title", "selftext", "body"]
+                    else line[k]
+                    for k in key_list
+                }
+
                 processed_items[name] += [reddit_res]
     logger.info(
-        "Total found {} {} {:.2f}".format(sum([len(ls) for ls in processed_items.values()]), mode, time() - st_time)
+        "Total found {} {} {:.2f}".format(
+            sum(len(ls) for ls in processed_items.values()),
+            mode,
+            time() - st_time,
+        )
     )
+
     return processed_items
 
 
@@ -354,7 +363,7 @@ class Eli5(datasets.GeneratorBasedBuilder):
         ]
 
     def _generate_examples(self, split, subreddit_name):
-        logger.info("generating examples from = {}, {} set".format(subreddit_name, split))
+        logger.info(f"generating examples from = {subreddit_name}, {split} set")
         if split in self.data_split.get(subreddit_name, []):
             id_list = self.data_split[subreddit_name][split]
             data = [
@@ -386,7 +395,7 @@ class Eli5(datasets.GeneratorBasedBuilder):
             for i, ans in enumerate(example["comments"]):
                 txt = ans["body"][0]
                 for j, _ in enumerate(ans["body"][1]):
-                    txt = txt.replace("_URL_{}_".format(j), "_URL_{}_".format(map_url_indices[(i, j)]))
+                    txt = txt.replace(f"_URL_{j}_", f"_URL_{map_url_indices[(i, j)]}_")
                 answer_texts += [txt.strip()]
             yield id_, {
                 "q_id": id_,

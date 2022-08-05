@@ -89,7 +89,7 @@ class GoEmotionsConfig(datasets.BuilderConfig):
                 "id": datasets.Value("string"),
             }
         elif self.name == "raw":
-            d = {
+            return {
                 "text": datasets.Value("string"),
                 "id": datasets.Value("string"),
                 "author": datasets.Value("string"),
@@ -99,9 +99,7 @@ class GoEmotionsConfig(datasets.BuilderConfig):
                 "created_utc": datasets.Value("float"),
                 "rater_id": datasets.Value("int32"),
                 "example_very_unclear": datasets.Value("bool"),
-            }
-            d.update({label: datasets.Value("int32") for label in _CLASS_NAMES})
-            return d
+            } | {label: datasets.Value("int32") for label in _CLASS_NAMES}
 
 
 class GoEmotions(datasets.GeneratorBasedBuilder):

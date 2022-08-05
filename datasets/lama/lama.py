@@ -274,15 +274,19 @@ class Lama(datasets.GeneratorBasedBuilder):
                     else:
                         for masked_sentence in data["masked_sentences"]:
                             id_ += 1
-                            yield id_, {
-                                "uuid": str(data["uuid"]),
-                                "sub": str(data.get("sub", "")),
-                                "obj": str(data.get("obj", "")),
-                                "pred": str(data["pred"]),
-                                "obj_label": str(data["obj_label"]),
-                                "masked_sentence": str(masked_sentence),
-                                "negated": str(""),
-                            }
+                            yield (
+                                id_,
+                                {
+                                    "uuid": str(data["uuid"]),
+                                    "sub": str(data.get("sub", "")),
+                                    "obj": str(data.get("obj", "")),
+                                    "pred": str(data["pred"]),
+                                    "obj_label": str(data["obj_label"]),
+                                    "masked_sentence": str(masked_sentence),
+                                    "negated": "",
+                                },
+                            )
+
         elif self.config.name == "squad":
             id_ = -1
             with open(filepath, encoding="utf-8") as f:

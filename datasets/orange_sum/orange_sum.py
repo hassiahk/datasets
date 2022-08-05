@@ -101,10 +101,6 @@ class OrangeSum(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath, split):
         """Yields examples."""
-        with open(
-            os.path.join(filepath, self.config.name, "{}.source".format(split)), encoding="utf-8"
-        ) as f_source, open(
-            os.path.join(filepath, self.config.name, "{}.target".format(split)), encoding="utf-8"
-        ) as f_target:
+        with open(os.path.join(filepath, self.config.name, f"{split}.source"), encoding="utf-8") as f_source, open(os.path.join(filepath, self.config.name, f"{split}.target"), encoding="utf-8") as f_target:
             for idx, (document, summary) in enumerate(zip(f_source, f_target)):
                 yield idx, {_DOCUMENT: document, _SUMMARY: summary}

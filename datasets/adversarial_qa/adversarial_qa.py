@@ -132,7 +132,9 @@ class AdversarialQA(datasets.GeneratorBasedBuilder):
 
     @staticmethod
     def _get_filepath(dl_dir, config_name, split):
-        return os.path.join(dl_dir, _CONFIG_NAME_MAP[config_name]["dir"], split + ".json")
+        return os.path.join(
+            dl_dir, _CONFIG_NAME_MAP[config_name]["dir"], f"{split}.json"
+        )
 
     def _split_generators(self, dl_manager):
         dl_dir = dl_manager.download_and_extract(_URL)

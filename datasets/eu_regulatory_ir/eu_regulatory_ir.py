@@ -58,24 +58,14 @@ class EuRegulatoryIr(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        if self.config.name == "eu2uk":
-            features = datasets.Features(
-                {
-                    "document_id": datasets.Value("string"),
-                    "publication_year": datasets.Value("string"),
-                    "text": datasets.Value("string"),
-                    "relevant_documents": datasets.features.Sequence(datasets.Value("string")),
-                }
-            )
-        else:
-            features = datasets.Features(
-                {
-                    "document_id": datasets.Value("string"),
-                    "publication_year": datasets.Value("string"),
-                    "text": datasets.Value("string"),
-                    "relevant_documents": datasets.features.Sequence(datasets.Value("string")),
-                }
-            )
+        features = datasets.Features(
+            {
+                "document_id": datasets.Value("string"),
+                "publication_year": datasets.Value("string"),
+                "text": datasets.Value("string"),
+                "relevant_documents": datasets.features.Sequence(datasets.Value("string")),
+            }
+        )
         return datasets.DatasetInfo(
             # This is the description that will appear on the datasets page.
             description=_DESCRIPTION,

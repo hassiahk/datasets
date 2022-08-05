@@ -67,9 +67,8 @@ class CodeXGlueCtCodeToTextBaseImpl(TrainValidTestChild):
         for root, dirs, files in os.walk(final_path):
             for file in files:
                 temp = os.path.join(root, file)
-                if ".jsonl" in temp:
-                    if split_name in temp:
-                        data_files.append(temp)
+                if ".jsonl" in temp and split_name in temp:
+                    data_files.append(temp)
         return data_files
 
     def post_process(self, split_name, language, js):
@@ -95,11 +94,7 @@ class CodeXGlueCtCodeToTextBaseImpl(TrainValidTestChild):
 
         idx = 0
         for file in data_files:
-            if ".gz" in file:
-                f = gzip.open(file)
-            else:
-                f = open(file, encoding="utf-8")
-
+            f = gzip.open(file) if ".gz" in file else open(file, encoding="utf-8")
             for line in f:
                 line = line.strip()
                 js = json.loads(line)
@@ -118,13 +113,11 @@ class CodeXGlueCtCodeToTextImpl(CodeXGlueCtCodeToTextBaseImpl):
 
     def generate_urls(self, split_name):
         language = self.info["parameters"]["language"]
-        for e in super().generate_urls(split_name, language):
-            yield e
+        yield from super().generate_urls(split_name, language)
 
     def _generate_examples(self, split_name, file_paths):
         language = self.info["parameters"]["language"]
-        for e in super()._generate_examples(split_name, file_paths, language):
-            yield e
+        yield from super()._generate_examples(split_name, file_paths, language)
 
 
 CLASS_MAPPING = {
@@ -145,8 +138,7 @@ class CodeXGlueCtCodeToText(datasets.GeneratorBasedBuilder):
             self.child = CLASS_MAPPING[info["class_name"]](info)
         else:
             raise RuntimeError(f"Unknown python class for dataset configuration {name}")
-        ret = self.child._info()
-        return ret
+        return self.child._info()
 
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
         return self.child._split_generators(dl_manager=dl_manager)

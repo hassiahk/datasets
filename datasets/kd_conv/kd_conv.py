@@ -157,15 +157,24 @@ class KdConv(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, data_dir, split):
         """Yields examples."""
+        id_ = -1
         if "dialogues" in self.config.name:
             if "all" in self.config.name:
                 file_dict = {
-                    domain: os.path.join(os.path.join(data_dir, domain), split + ".json") for domain in _DOMAINS
+                    domain: os.path.join(
+                        os.path.join(data_dir, domain), f"{split}.json"
+                    )
+                    for domain in _DOMAINS
                 }
+
             else:
                 domain = self.config.name.split("_")[0]
-                file_dict = {domain: os.path.join(os.path.join(data_dir, domain), split + ".json")}
-            id_ = -1
+                file_dict = {
+                    domain: os.path.join(
+                        os.path.join(data_dir, domain), f"{split}.json"
+                    )
+                }
+
             for domain, filepath in file_dict.items():
                 with open(filepath, encoding="utf-8") as f:
                     conversations = json.load(f)
@@ -185,14 +194,21 @@ class KdConv(datasets.GeneratorBasedBuilder):
         else:
             if "all" in self.config.name:
                 file_dict = {
-                    domain: os.path.join(os.path.join(data_dir, domain), "kb_" + domain + ".json")
+                    domain: os.path.join(
+                        os.path.join(data_dir, domain), f"kb_{domain}.json"
+                    )
                     for domain in _DOMAINS
                 }
+
             else:
                 domain = self.config.name.split("_")[0]
-                file_dict = {domain: os.path.join(os.path.join(data_dir, domain), "kb_" + domain + ".json")}
+                file_dict = {
+                    domain: os.path.join(
+                        os.path.join(data_dir, domain), f"kb_{domain}.json"
+                    )
+                }
 
-            id_ = -1
+
             for domain, filepath in file_dict.items():
                 with open(filepath, encoding="utf-8") as f:
                     kb_dict = json.load(f)

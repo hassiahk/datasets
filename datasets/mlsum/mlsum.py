@@ -76,25 +76,28 @@ class Mlsum(datasets.GeneratorBasedBuilder):
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(downloaded_files["train"], lang + "_train.jsonl"),
+                    "filepath": os.path.join(
+                        downloaded_files["train"], f"{lang}_train.jsonl"
+                    ),
                     "lang": lang,
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(downloaded_files["validation"], lang + "_val.jsonl"),
+                    "filepath": os.path.join(
+                        downloaded_files["validation"], f"{lang}_val.jsonl"
+                    ),
                     "lang": lang,
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(downloaded_files["test"], lang + "_test.jsonl"),
+                    "filepath": os.path.join(
+                        downloaded_files["test"], f"{lang}_test.jsonl"
+                    ),
                     "lang": lang,
                 },
             ),
@@ -103,10 +106,8 @@ class Mlsum(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, lang):
         """Yields examples."""
         with open(filepath, encoding="utf-8") as f:
-            i = 0
-            for line in f:
+            for i, line in enumerate(f, start=1):
                 data = json.loads(line)
-                i += 1
                 yield i, {
                     "text": data["text"],
                     "summary": data["summary"],

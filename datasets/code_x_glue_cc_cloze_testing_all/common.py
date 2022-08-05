@@ -42,12 +42,13 @@ class Child:
 
             for key, url in self.generate_urls(split):
                 if not url.startswith("http"):
-                    url = _URL + "/" + url
+                    url = f"{_URL}/{url}"
                 urls_to_download[split][key] = url
 
-        downloaded_files = {}
-        for k, v in urls_to_download.items():
-            downloaded_files[k] = dl_manager.download_and_extract(v)
+        downloaded_files = {
+            k: dl_manager.download_and_extract(v)
+            for k, v in urls_to_download.items()
+        }
 
         return [
             datasets.SplitGenerator(
@@ -58,13 +59,13 @@ class Child:
         ]
 
     def check_empty(self, entries):
-        all_empty = all([v == "" for v in entries.values()])
-        all_non_empty = all([v != "" for v in entries.values()])
+        all_empty = all(v == "" for v in entries.values())
+        all_non_empty = all(v != "" for v in entries.values())
 
-        if not all_non_empty and not all_empty:
+        if all_non_empty or all_empty:
+            return all_empty
+        else:
             raise RuntimeError("Parallel data files should have the same number of lines.")
-
-        return all_empty
 
 
 class TrainValidTestChild(Child):

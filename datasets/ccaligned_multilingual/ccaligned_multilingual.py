@@ -174,7 +174,7 @@ class CcalignedMultilingual(datasets.GeneratorBasedBuilder):
             url = my_urls + self.config.language_code + "-en_XX.tsv.xz"
             from_english = False
         else:
-            url = my_urls + "en_XX-" + self.config.language_code + ".tsv.xz"
+            url = f"{my_urls}en_XX-{self.config.language_code}.tsv.xz"
             from_english = True
         data_file = dl_manager.download_and_extract(url)
         return [
@@ -202,14 +202,14 @@ class CcalignedMultilingual(datasets.GeneratorBasedBuilder):
                         "Target_URL": data[3],
                         "translation": {"en_XX": data[2].strip(), lc: data[4].strip()},
                     }
+                elif reverse:
+                    yield id_, {
+                        "translation": {lc: data[0].strip(), "en_XX": data[1].strip()},
+                        "LASER_similarity": data[2],
+                    }
+
                 else:
-                    if not reverse:
-                        yield id_, {
-                            "translation": {"en_XX": data[0].strip(), lc: data[1].strip()},
-                            "LASER_similarity": data[2],
-                        }
-                    else:
-                        yield id_, {
-                            "translation": {lc: data[0].strip(), "en_XX": data[1].strip()},
-                            "LASER_similarity": data[2],
-                        }
+                    yield id_, {
+                        "translation": {"en_XX": data[0].strip(), lc: data[1].strip()},
+                        "LASER_similarity": data[2],
+                    }

@@ -149,9 +149,7 @@ class MacMorpho(datasets.GeneratorBasedBuilder):
 
         with open(filepath, "r", encoding="utf-8") as f:
 
-            id_ = 0
-
-            for line in f:
+            for id_, line in enumerate(f):
 
                 line = line.rstrip()
                 chunks = re.split(r"\s+", line)
@@ -168,4 +166,3 @@ class MacMorpho(datasets.GeneratorBasedBuilder):
                     "tokens": tokens,
                     "pos_tags": pos_tags,
                 }
-                id_ += 1

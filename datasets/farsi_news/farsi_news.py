@@ -16,6 +16,7 @@
 """Farsi News Datasets: Hamshahri and RadioFarda"""
 
 
+
 import json
 
 import datasets
@@ -34,8 +35,8 @@ These datasets have been extracted from the RSS feed of two Farsi news agency we
 
 _URL = "https://raw.githubusercontent.com/sci2lab/Farsi-datasets/master/farsi_news/"
 _URLS = {
-    "hamshahri": _URL + "hamshahri.json",
-    "radiofarda": _URL + "radiofarda.json",
+    "hamshahri": f"{_URL}hamshahri.json",
+    "radiofarda": f"{_URL}radiofarda.json",
 }
 
 
@@ -89,5 +90,4 @@ class FarsiNews(datasets.GeneratorBasedBuilder):
         """Yields examples."""
         with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
-            for id_, example in enumerate(data):
-                yield id_, example
+            yield from enumerate(data)

@@ -16,6 +16,7 @@
 Reading Comprehension Question Answering Dataset"""
 
 
+
 import json
 
 import datasets
@@ -42,14 +43,14 @@ _LICENSE = "https://raw.githubusercontent.com/duorc/duorc/master/LICENSE"
 _URL = "https://raw.githubusercontent.com/duorc/duorc/master/dataset/"
 _URLs = {
     "SelfRC": {
-        "train": _URL + "SelfRC_train.json",
-        "dev": _URL + "SelfRC_dev.json",
-        "test": _URL + "SelfRC_test.json",
+        "train": f"{_URL}SelfRC_train.json",
+        "dev": f"{_URL}SelfRC_dev.json",
+        "test": f"{_URL}SelfRC_test.json",
     },
     "ParaphraseRC": {
-        "train": _URL + "ParaphraseRC_train.json",
-        "dev": _URL + "ParaphraseRC_dev.json",
-        "test": _URL + "ParaphraseRC_test.json",
+        "train": f"{_URL}ParaphraseRC_train.json",
+        "dev": f"{_URL}ParaphraseRC_dev.json",
+        "test": f"{_URL}ParaphraseRC_test.json",
     },
 }
 

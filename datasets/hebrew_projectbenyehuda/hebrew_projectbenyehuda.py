@@ -1,6 +1,7 @@
 """Public domain texts from Project Ben-Yehuda- a set of books extracted from the Project BenYehuda library"""
 
 
+
 import csv
 
 import datasets
@@ -28,7 +29,7 @@ _STORAGE_API_ROOT_URL = "https://raw.githubusercontent.com/projectbenyehuda/publ
 
 # download one by one file from github is too slow
 
-_METADATA_URL = _ASSET_ROOT_URL + "pseudocatalogue.csv"
+_METADATA_URL = f"{_ASSET_ROOT_URL}pseudocatalogue.csv"
 
 
 class HebrewProjectbenyehuda(datasets.GeneratorBasedBuilder):
@@ -72,8 +73,8 @@ class HebrewProjectbenyehuda(datasets.GeneratorBasedBuilder):
 
         metadata = dl_manager.download({"metadata": _METADATA_URL})
 
-        urls_to_download = dict()
-        ids = list()
+        urls_to_download = {}
+        ids = []
         with open(metadata["metadata"], encoding="utf-8") as csv_file:
             for row in csv.DictReader(csv_file):
                 ids.append(row["ID"])

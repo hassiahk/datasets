@@ -17,6 +17,7 @@
 """DREAM: A Challenge Dataset and Models for Dialogue-Based Reading Comprehension"""
 
 
+
 import json
 
 import datasets
@@ -43,9 +44,9 @@ in-depth multi-turn multi-party dialogue understanding.
 
 _URL = "https://raw.githubusercontent.com/nlpdata/dream/master/data/"
 _URLS = {
-    "train": _URL + "train.json",
-    "dev": _URL + "dev.json",
-    "test": _URL + "test.json",
+    "train": f"{_URL}train.json",
+    "dev": f"{_URL}dev.json",
+    "test": f"{_URL}test.json",
 }
 
 

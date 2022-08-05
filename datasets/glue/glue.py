@@ -621,7 +621,10 @@ def _mnli_split_generator(name, data_dir, split, matched):
     return datasets.SplitGenerator(
         name=name,
         gen_kwargs={
-            "data_file": os.path.join(data_dir, "%s_%s.tsv" % (split, "matched" if matched else "mismatched")),
+            "data_file": os.path.join(
+                data_dir,
+                f'{split}_{"matched" if matched else "mismatched"}.tsv',
+            ),
             "split": split,
             "mrpc_files": None,
         },

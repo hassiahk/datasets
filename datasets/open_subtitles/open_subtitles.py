@@ -125,7 +125,7 @@ class OpenSubtitles(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, datapath):
         l1, l2 = self.config.lang1, self.config.lang2
-        folder = l1 + "-" + l2
+        folder = f"{l1}-{l2}"
         l1_file = _BASE_NAME.format(folder, l1)
         l2_file = _BASE_NAME.format(folder, l2)
         ids_file = _BASE_NAME.format(folder, "ids")

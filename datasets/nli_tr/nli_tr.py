@@ -158,9 +158,5 @@ class NliTr(datasets.GeneratorBasedBuilder):
                 example = {"idx": idx, "premise": data["sentence1"], "hypothesis": data["sentence2"]}
 
                 if "gold_label" in data:
-                    if data["gold_label"] != "-":
-                        example["label"] = data["gold_label"]
-                    else:
-                        example["label"] = -1
-
+                    example["label"] = data["gold_label"] if data["gold_label"] != "-" else -1
                 yield idx, example

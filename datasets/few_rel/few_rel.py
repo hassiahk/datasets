@@ -15,6 +15,7 @@
 """FewRel Dataset."""
 
 
+
 import json
 
 import datasets
@@ -57,13 +58,13 @@ _LICENSE = "https://raw.githubusercontent.com/thunlp/FewRel/master/LICENSE"
 
 DATA_URL = "https://raw.githubusercontent.com/thunlp/FewRel/master/data/"
 _URLs = {
-    "train_wiki": DATA_URL + "train_wiki.json",
-    "val_nyt": DATA_URL + "val_nyt.json",
-    "val_pubmed": DATA_URL + "val_pubmed.json",
-    "val_semeval": DATA_URL + "val_semeval.json",
-    "val_wiki": DATA_URL + "val_wiki.json",
-    "pid2name": DATA_URL + "pid2name.json",
-    "pubmed_unsupervised": DATA_URL + "pubmed_unsupervised.json",
+    "train_wiki": f"{DATA_URL}train_wiki.json",
+    "val_nyt": f"{DATA_URL}val_nyt.json",
+    "val_pubmed": f"{DATA_URL}val_pubmed.json",
+    "val_semeval": f"{DATA_URL}val_semeval.json",
+    "val_wiki": f"{DATA_URL}val_wiki.json",
+    "pid2name": f"{DATA_URL}pid2name.json",
+    "pubmed_unsupervised": f"{DATA_URL}pubmed_unsupervised.json",
 }
 
 
@@ -142,8 +143,8 @@ class FewRel(datasets.GeneratorBasedBuilder):
 
         with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
+        id = 0
         if isinstance(data, dict):
-            id = 0
             for key in list(data.keys()):
                 for items in data[key]:
                     tokens = items["tokens"]
@@ -166,7 +167,6 @@ class FewRel(datasets.GeneratorBasedBuilder):
                         ],
                     }
         else:  # For `pubmed_unsupervised.json`
-            id = 0
             for items in data:
                 tokens = items["tokens"]
                 h_0 = items["h"][0]

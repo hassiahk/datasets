@@ -101,23 +101,13 @@ class MultiReQa(datasets.GeneratorBasedBuilder):
     # DEFAULT_CONFIG_NAME = "SearchQA"  # It's not mandatory to have a default configuration. Just use one if it make sense.
 
     def _info(self):
-        # This method specifies the datasets.DatasetInfo object which contains informations and typings for the dataset
-        if self.config.name == "SearchQA":  # This is the name of the configuration selected in BUILDER_CONFIGS above
-            features = datasets.Features(
-                {
-                    "candidate_id": datasets.Value("string"),
-                    "response_start": datasets.Value("int32"),
-                    "response_end": datasets.Value("int32"),
-                }
-            )
-        else:
-            features = datasets.Features(
-                {
-                    "candidate_id": datasets.Value("string"),
-                    "response_start": datasets.Value("int32"),
-                    "response_end": datasets.Value("int32"),
-                }
-            )
+        features = datasets.Features(
+            {
+                "candidate_id": datasets.Value("string"),
+                "response_start": datasets.Value("int32"),
+                "response_end": datasets.Value("int32"),
+            }
+        )
         return datasets.DatasetInfo(
             # This is the description that will appear on the datasets page.
             description=_DESCRIPTION,
@@ -135,22 +125,14 @@ class MultiReQa(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
 
-        if (
-            self.config.name == "SearchQA"
-            or self.config.name == "TriviaQA"
-            or self.config.name == "HotpotQA"
-            or self.config.name == "SQuAD"
-            or self.config.name == "NaturalQuestions"
-        ):
-            if self.config.name == "SearchQA":
-                train_file_url = train_SearchQA
-                dev_file_url = dev_SearchQA
-
-            elif self.config.name == "TriviaQA":
-                train_file_url = train_TriviaQA
-                dev_file_url = dev_TriviaQA
-
-            elif self.config.name == "HotpotQA":
+        if self.config.name in [
+            "SearchQA",
+            "TriviaQA",
+            "HotpotQA",
+            "SQuAD",
+            "NaturalQuestions",
+        ]:
+            if self.config.name == "HotpotQA":
                 train_file_url = train_HotpotQA
                 dev_file_url = dev_HotpotQA
 
@@ -158,7 +140,15 @@ class MultiReQa(datasets.GeneratorBasedBuilder):
                 train_file_url = train_SQuAD
                 dev_file_url = dev_SQuAD
 
-            elif self.config.name == "NaturalQuestions":
+            elif self.config.name == "SearchQA":
+                train_file_url = train_SearchQA
+                dev_file_url = dev_SearchQA
+
+            elif self.config.name == "TriviaQA":
+                train_file_url = train_TriviaQA
+                dev_file_url = dev_TriviaQA
+
+            else:
                 train_file_url = train_NaturalQuestions
                 dev_file_url = dev_NaturalQuestions
 
@@ -188,14 +178,14 @@ class MultiReQa(datasets.GeneratorBasedBuilder):
             if self.config.name == "BioASQ":
                 test_file_url = test_BioASQ
 
+            elif self.config.name == "DuoRC":
+                test_file_url = test_DuoRC
+
             elif self.config.name == "RelationExtraction":
                 test_file_url = test_RelationExtraction
 
             elif self.config.name == "TextbookQA":
                 test_file_url = test_TextbookQA
-
-            elif self.config.name == "DuoRC":
-                test_file_url = test_DuoRC
 
             test_file = dl_manager.download_and_extract(test_file_url)
 

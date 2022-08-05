@@ -1,6 +1,7 @@
 """TODO(cosmos_qa): Add a description here."""
 
 
+
 import csv
 import json
 
@@ -25,9 +26,9 @@ Cosmos QA is a large-scale dataset of 35.6K problems that require commonsense-ba
 
 _URL = "https://github.com/wilburOne/cosmosqa/raw/master/data/"
 _URLS = {
-    "train": _URL + "train.csv",
-    "test": _URL + "test.jsonl",
-    "dev": _URL + "valid.csv",
+    "train": f"{_URL}train.csv",
+    "test": f"{_URL}test.jsonl",
+    "dev": f"{_URL}valid.csv",
 }
 
 

@@ -16,6 +16,7 @@
 """Amazon Customer Reviews Dataset --- US REVIEWS DATASET."""
 
 
+
 import csv
 
 import datasets
@@ -98,7 +99,7 @@ _DATA_OPTIONS = [
 ]
 
 _DL_URLS = {
-    name: "https://s3.amazonaws.com/amazon-reviews-pds/tsv/amazon_reviews_us_" + name + ".tsv.gz"
+    name: f"https://s3.amazonaws.com/amazon-reviews-pds/tsv/amazon_reviews_us_{name}.tsv.gz"
     for name in _DATA_OPTIONS
 }
 
@@ -176,5 +177,4 @@ class AmazonUSReviews(datasets.GeneratorBasedBuilder):
         with open(file_path, "r", encoding="utf-8") as tsvfile:
             # Need to disable quoting - as dataset contains invalid double quotes.
             reader = csv.DictReader(tsvfile, dialect="excel-tab", quoting=csv.QUOTE_NONE)
-            for i, row in enumerate(reader):
-                yield i, row
+            yield from enumerate(reader)

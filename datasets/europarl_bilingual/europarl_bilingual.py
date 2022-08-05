@@ -68,8 +68,9 @@ LANGUAGES = [
 
 ALL_PAIRS = []
 for i in range(len(LANGUAGES)):
-    for j in range(i + 1, len(LANGUAGES)):
-        ALL_PAIRS.append((LANGUAGES[i], LANGUAGES[j]))
+    ALL_PAIRS.extend(
+        (LANGUAGES[i], LANGUAGES[j]) for j in range(i + 1, len(LANGUAGES))
+    )
 
 _VERSION = "8.0.0"
 _BASE_URL_DATASET = "https://opus.nlpl.eu/download.php?f=Europarl/v8/raw/{}.zip"

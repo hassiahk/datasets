@@ -15,6 +15,7 @@
 """Naver movie review corpus for binary sentiment classification"""
 
 
+
 import csv
 
 import datasets
@@ -40,8 +41,8 @@ _LICENSE = "CC0 1.0 Universal (CC0 1.0)"
 
 _URL = "https://raw.githubusercontent.com/e9t/nsmc/master/"
 _URLs = {
-    "train": _URL + "ratings_train.txt",
-    "test": _URL + "ratings_test.txt",
+    "train": f"{_URL}ratings_train.txt",
+    "test": f"{_URL}ratings_test.txt",
 }
 
 

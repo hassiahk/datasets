@@ -121,9 +121,8 @@ class Drop(datasets.GeneratorBasedBuilder):
         with open(filepath, mode="r", encoding="utf-8") as f:
             data = json.load(f)
             id_ = 0
-            for i, (section_id, section) in enumerate(data.items()):
-                for j, qa in enumerate(section["qa_pairs"]):
-
+            for section_id, section in data.items():
+                for qa in section["qa_pairs"]:
                     example = {
                         "section_id": section_id,
                         "query_id": qa["query_id"],
@@ -131,11 +130,7 @@ class Drop(datasets.GeneratorBasedBuilder):
                         "question": qa["question"],
                     }
 
-                    if split == "train":
-                        answers = [qa["answer"]]
-                    else:
-                        answers = qa["validated_answers"]
-
+                    answers = [qa["answer"]] if split == "train" else qa["validated_answers"]
                     try:
                         example["answers_spans"] = self.build_answers(answers)
                         yield id_, example
@@ -156,10 +151,7 @@ class Drop(datasets.GeneratorBasedBuilder):
 
     def build_answers(self, answers):
 
-        returned_answers = {
-            "spans": list(),
-            "types": list(),
-        }
+        returned_answers = {"spans": [], "types": []}
         for answer in answers:
             date = DropDateObject(answer["date"])
 

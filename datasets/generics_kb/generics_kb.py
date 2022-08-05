@@ -99,7 +99,7 @@ class GenericsKb(datasets.GeneratorBasedBuilder):
     DEFAULT_CONFIG_NAME = "generics_kb_best"
 
     def _info(self):
-        if self.config.name == "generics_kb_waterloo" or self.config.name == "generics_kb_simplewiki":
+        if self.config.name in ["generics_kb_waterloo", "generics_kb_simplewiki"]:
 
             featuredict = {
                 "source_name": datasets.Value("string"),
@@ -180,7 +180,7 @@ class GenericsKb(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         """Yields examples."""
 
-        if self.config.name == "generics_kb_waterloo" or self.config.name == "generics_kb_simplewiki":
+        if self.config.name in ["generics_kb_waterloo", "generics_kb_simplewiki"]:
 
             with open(filepath, encoding="utf-8") as f:
                 for id_, row in enumerate(f):

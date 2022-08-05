@@ -99,9 +99,7 @@ class MovieRationales(datasets.GeneratorBasedBuilder):
 
                 evidences = []
                 for evidence in row["evidences"]:
-                    for e in evidence:
-                        evidences.append(e["text"])
-
+                    evidences.extend(e["text"] for e in evidence)
                 yield doc_id, {
                     "review": review_text,
                     "label": row["classification"],

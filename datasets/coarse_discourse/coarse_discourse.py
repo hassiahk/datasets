@@ -101,16 +101,23 @@ class CoarseDiscourse(datasets.GeneratorBasedBuilder):
                     main_types = [annotation.get("main_type", "") for annotation in annotations]
                     link_posts = [annotation.get("linkk_to_post", "") for annotation in annotations]
 
-                    yield str(id_) + "_" + str(id1), {
-                        "title": title,
-                        "is_self_post": is_self_post,
-                        "subreddit": subreddit,
-                        "url": url,
-                        "majority_link": maj_link,
-                        "is_first_post": is_first_post,
-                        "majority_type": maj_type,
-                        "id_post": id_post,
-                        "post_depth": post_depth,
-                        "in_reply_to": in_reply_to,
-                        "annotations": {"annotator": annotators, "link_to_post": link_posts, "main_type": main_types},
-                    }
+                    yield (
+                        f"{str(id_)}_{str(id1)}",
+                        {
+                            "title": title,
+                            "is_self_post": is_self_post,
+                            "subreddit": subreddit,
+                            "url": url,
+                            "majority_link": maj_link,
+                            "is_first_post": is_first_post,
+                            "majority_type": maj_type,
+                            "id_post": id_post,
+                            "post_depth": post_depth,
+                            "in_reply_to": in_reply_to,
+                            "annotations": {
+                                "annotator": annotators,
+                                "link_to_post": link_posts,
+                                "main_type": main_types,
+                            },
+                        },
+                    )

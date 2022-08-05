@@ -81,11 +81,12 @@ class Esnli(datasets.GeneratorBasedBuilder):
 
         files = dl_manager.download_and_extract(
             {
-                "train": [_URL + "esnli_train_1.csv", _URL + "esnli_train_2.csv"],
-                "validation": [_URL + "esnli_dev.csv"],
-                "test": [_URL + "esnli_test.csv"],
+                "train": [f"{_URL}esnli_train_1.csv", f"{_URL}esnli_train_2.csv"],
+                "validation": [f"{_URL}esnli_dev.csv"],
+                "test": [f"{_URL}esnli_test.csv"],
             }
         )
+
 
         return [
             datasets.SplitGenerator(
@@ -107,7 +108,7 @@ class Esnli(datasets.GeneratorBasedBuilder):
         for filepath in files:
             with open(filepath, encoding="utf-8") as f:
                 reader = csv.DictReader(f)
-                for _, row in enumerate(reader):
+                for row in reader:
                     yield row["pairID"], {
                         "premise": row["Sentence1"],
                         "hypothesis": row["Sentence2"],

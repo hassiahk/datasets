@@ -119,13 +119,12 @@ class OnestopEnglish(datasets.GeneratorBasedBuilder):
             except Exception as e:
                 logger.info("Error with:", os.path.join(dir_path, f), e)
 
+        if split_key != "train":
+            raise ValueError(f"Invalid split key {split_key}")
         train_samples = ele_samples + int_samples + adv_samples
         train_labels = (["ele"] * len(ele_samples)) + (["int"] * len(int_samples)) + (["adv"] * len(adv_samples))
 
-        if split_key == "train":
-            return (train_samples, train_labels)
-        else:
-            raise ValueError(f"Invalid split key {split_key}")
+        return (train_samples, train_labels)
 
     def _generate_examples(self, split_key, data_dir):
         """Yields examples for a given split of dataset."""

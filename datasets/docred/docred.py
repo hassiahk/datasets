@@ -78,7 +78,7 @@ class DocRed(datasets.GeneratorBasedBuilder):
             downloads[key] = dl_manager.download_and_extract(_URLS[key])
             #  Fix for dummy data
             if os.path.isdir(downloads[key]):
-                downloads[key] = os.path.join(downloads[key], key + ".json")
+                downloads[key] = os.path.join(downloads[key], f"{key}.json")
 
         return [
             datasets.SplitGenerator(

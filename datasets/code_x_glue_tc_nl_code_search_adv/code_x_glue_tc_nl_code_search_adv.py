@@ -67,9 +67,8 @@ class CodeXGlueCtCodeToTextBaseImpl(TrainValidTestChild):
         for root, dirs, files in os.walk(final_path):
             for file in files:
                 temp = os.path.join(root, file)
-                if ".jsonl" in temp:
-                    if split_name in temp:
-                        data_files.append(temp)
+                if ".jsonl" in temp and split_name in temp:
+                    data_files.append(temp)
         return data_files
 
     def post_process(self, split_name, language, js):
@@ -95,11 +94,7 @@ class CodeXGlueCtCodeToTextBaseImpl(TrainValidTestChild):
 
         idx = 0
         for file in data_files:
-            if ".gz" in file:
-                f = gzip.open(file)
-            else:
-                f = open(file, encoding="utf-8")
-
+            f = gzip.open(file) if ".gz" in file else open(file, encoding="utf-8")
             for line in f:
                 line = line.strip()
                 js = json.loads(line)
@@ -147,35 +142,28 @@ class CodeXGlueTcNLCodeSearchAdvImpl(CodeXGlueCtCodeToTextBaseImpl):
 
     def post_process(self, split_name, language, js):
         for suffix in "_tokens", "":
-            key = "function" + suffix
+            key = f"function{suffix}"
             if key in js:
-                js["code" + suffix] = js[key]
+                js[f"code{suffix}"] = js[key]
                 del js[key]
 
         for key in self._FEATURES:
             if key not in js:
-                if key == "score":
-                    js[key] = -1
-                else:
-                    js[key] = ""
-
+                js[key] = -1 if key == "score" else ""
         return js
 
     def generate_urls(self, split_name):
-        for e in super().generate_urls(split_name, self.LANGUAGE):
-            yield e
+        yield from super().generate_urls(split_name, self.LANGUAGE)
 
     def get_data_files(self, split_name, file_paths, language):
         if split_name == "train":
             return super().get_data_files(split_name, file_paths, language)
-        else:
-            data_set_path = file_paths["dataset"]
-            data_file = os.path.join(data_set_path, "dataset", "test_code.jsonl")
-            return [data_file]
+        data_set_path = file_paths["dataset"]
+        data_file = os.path.join(data_set_path, "dataset", "test_code.jsonl")
+        return [data_file]
 
     def _generate_examples(self, split_name, file_paths):
-        for e in super()._generate_examples(split_name, file_paths, self.LANGUAGE):
-            yield e
+        yield from super()._generate_examples(split_name, file_paths, self.LANGUAGE)
 
 
 CLASS_MAPPING = {
@@ -196,8 +184,7 @@ class CodeXGlueTcNlCodeSearchAdv(datasets.GeneratorBasedBuilder):
             self.child = CLASS_MAPPING[info["class_name"]](info)
         else:
             raise RuntimeError(f"Unknown python class for dataset configuration {name}")
-        ret = self.child._info()
-        return ret
+        return self.child._info()
 
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
         return self.child._split_generators(dl_manager=dl_manager)

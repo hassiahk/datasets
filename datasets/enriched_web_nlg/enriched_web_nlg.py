@@ -89,9 +89,14 @@ def parse_entry(entry, config_name):
     - Proper feature naming
     - Default values
     - Proper typing"""
-    res = {}
     otriple_set_list = entry["originaltripleset"]
-    res["original_triple_sets"] = [{"otriple_set": otriple_set["otriple"]} for otriple_set in otriple_set_list]
+    res = {
+        "original_triple_sets": [
+            {"otriple_set": otriple_set["otriple"]}
+            for otriple_set in otriple_set_list
+        ]
+    }
+
     mtriple_set_list = entry["modifiedtripleset"]
     res["modified_triple_sets"] = [{"mtriple_set": mtriple_set["mtriple"]} for mtriple_set in mtriple_set_list]
     res["category"] = entry["category"]

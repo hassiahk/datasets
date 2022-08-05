@@ -106,8 +106,7 @@ class IdNewspapers2018(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, article_dir, split):
         logger.info("⏳ Generating %s examples from = %s", split, article_dir)
-        id = 0
-        for path in sorted(glob.glob(os.path.join(article_dir, "**/*.json"), recursive=True)):
+        for id, path in enumerate(sorted(glob.glob(os.path.join(article_dir, "**/*.json"), recursive=True))):
             with open(path, encoding="utf-8") as f:
                 data = json.load(f)
                 yield id, {
@@ -117,4 +116,3 @@ class IdNewspapers2018(datasets.GeneratorBasedBuilder):
                     "title": data["title"],
                     "content": data["content"],
                 }
-            id += 1

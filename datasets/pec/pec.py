@@ -91,16 +91,15 @@ class PEC(datasets.GeneratorBasedBuilder):
         for path in paths:
             with open(path, encoding="utf-8") as f:
                 for row in f:
-                    if "********************" not in row:
-                        if is_speaker:
-                            speaker = row.strip()
-                            is_speaker = False
-                        else:
-                            sentences.append(row.strip())
-                    else:
+                    if "********************" in row:
                         persona[speaker] = sentences
                         is_speaker = True
                         sentences = []
+                    elif is_speaker:
+                        speaker = row.strip()
+                        is_speaker = False
+                    else:
+                        sentences.append(row.strip())
         return persona
 
     def _split_generators(self, dl_manager):
@@ -149,18 +148,10 @@ class PEC(datasets.GeneratorBasedBuilder):
         example_id = 0
         for fpath in filepath:
             with open(fpath, encoding="utf-8") as f:
-                for id_, row in enumerate(f):
+                for row in f:
                     if row.strip() == "":
                         continue
-                    if "********************" not in row:
-                        if "---+---" in row:
-                            speaker, utterance = row.split("---+---")
-                            context_speakers.append(speaker.strip())
-                            context.append(utterance.strip())
-                        else:
-                            # contains inline \n
-                            context[-1] = context[-1] + " " + row.strip()
-                    else:
+                    if "********************" in row:
                         response_speaker = context_speakers.pop()
                         response = context.pop()
                         yield example_id, {
@@ -173,3 +164,11 @@ class PEC(datasets.GeneratorBasedBuilder):
                         context_speakers = []
                         context = []
                         example_id += 1
+
+                    elif "---+---" in row:
+                        speaker, utterance = row.split("---+---")
+                        context_speakers.append(speaker.strip())
+                        context.append(utterance.strip())
+                    else:
+                            # contains inline \n
+                        context[-1] = f"{context[-1]} {row.strip()}"

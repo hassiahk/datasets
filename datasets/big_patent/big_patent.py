@@ -122,8 +122,12 @@ class BigPatent(datasets.GeneratorBasedBuilder):
         dl_path = dl_manager.download_and_extract(_URL)
         split_types = ["train", "val", "test"]
         extract_paths = dl_manager.extract(
-            {k: os.path.join(dl_path, "bigPatentData", k + ".tar.gz") for k in split_types}
+            {
+                k: os.path.join(dl_path, "bigPatentData", f"{k}.tar.gz")
+                for k in split_types
+            }
         )
+
         extract_paths = {k: os.path.join(extract_paths[k], k) for k in split_types}
 
         return [

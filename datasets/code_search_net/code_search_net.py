@@ -16,6 +16,7 @@
 # Lint as: python3
 """CodeSearchNet corpus: proxy dataset for semantic code search"""
 
+
 # TODO: add licensing info in the examples
 # TODO: log richer informations (especially while extracting the jsonl.gz files)
 # TODO: enable custom configs; such as: "java+python"
@@ -51,7 +52,11 @@ _LICENSE = "Various"
 
 _S3_BUCKET_URL = "https://s3.amazonaws.com/code-search-net/CodeSearchNet/v2/"
 _AVAILABLE_LANGUAGES = ["python", "java", "javascript", "go", "ruby", "php"]
-_URLs = {language: _S3_BUCKET_URL + f"{language}.zip" for language in _AVAILABLE_LANGUAGES}
+_URLs = {
+    language: f"{_S3_BUCKET_URL}{language}.zip"
+    for language in _AVAILABLE_LANGUAGES
+}
+
 # URLs for "all" are just the concatenation of URLs for all languages
 _URLs["all"] = _URLs.copy()
 

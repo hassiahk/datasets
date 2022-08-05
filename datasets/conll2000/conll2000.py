@@ -186,7 +186,7 @@ class Conll2000(datasets.GeneratorBasedBuilder):
             pos_tags = []
             chunk_tags = []
             for line in f:
-                if line == "" or line == "\n":
+                if line in ["", "\n"]:
                     if tokens:
                         yield guid, {"id": str(guid), "tokens": tokens, "pos_tags": pos_tags, "chunk_tags": chunk_tags}
                         guid += 1

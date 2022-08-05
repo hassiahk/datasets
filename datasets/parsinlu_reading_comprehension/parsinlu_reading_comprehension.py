@@ -15,6 +15,7 @@
 """ParsiNLU Persian reading comprehension task"""
 
 
+
 import json
 
 import datasets
@@ -44,9 +45,9 @@ _LICENSE = "CC BY-NC-SA 4.0"
 
 _URL = "https://raw.githubusercontent.com/persiannlp/parsinlu/master/data/reading_comprehension/"
 _URLs = {
-    "train": _URL + "train.jsonl",
-    "dev": _URL + "dev.jsonl",
-    "test": _URL + "eval.jsonl",
+    "train": f"{_URL}train.jsonl",
+    "dev": f"{_URL}dev.jsonl",
+    "test": f"{_URL}eval.jsonl",
 }
 
 

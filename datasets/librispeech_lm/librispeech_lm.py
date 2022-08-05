@@ -69,6 +69,5 @@ class LibrispeechLm(datasets.GeneratorBasedBuilder):
         """Yields examples."""
         with open(archive_path, "r", encoding="utf-8") as f:
             for key, line in enumerate(f):
-                text = line.strip()
-                if text:  # Skip empty lines.
+                if text := line.strip():
                     yield key, {"text": text}

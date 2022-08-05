@@ -15,6 +15,7 @@
 """FreebaseQA: A Trivia-type QA Data Set over the Freebase Knowledge Graph"""
 
 
+
 import json
 
 import datasets
@@ -41,9 +42,9 @@ _LICENSE = ""
 _REPO = "https://raw.githubusercontent.com/kelvin-jiang/FreebaseQA/master/"
 
 _URLs = {
-    "train": _REPO + "FreebaseQA-train.json",
-    "eval": _REPO + "FreebaseQA-eval.json",
-    "dev": _REPO + "FreebaseQA-dev.json",
+    "train": f"{_REPO}FreebaseQA-train.json",
+    "eval": f"{_REPO}FreebaseQA-eval.json",
+    "dev": f"{_REPO}FreebaseQA-dev.json",
 }
 
 
@@ -118,7 +119,7 @@ class FreebaseQA(datasets.GeneratorBasedBuilder):
                     parses = []
 
                     for item in data["Parses"]:
-                        answers = [answer for answer in item["Answers"]]
+                        answers = list(item["Answers"])
 
                         parses.append(
                             {

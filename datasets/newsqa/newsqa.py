@@ -183,10 +183,9 @@ class Newsqa(datasets.GeneratorBasedBuilder):
 
         if not os.path.exists(path_to_manual_folder):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('newsqa', data_dir=...)` that includes files from the Manual download instructions: {}".format(
-                    path_to_manual_folder, self.manual_download_instructions
-                )
+                f"{path_to_manual_folder} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('newsqa', data_dir=...)` that includes files from the Manual download instructions: {self.manual_download_instructions}"
             )
+
 
         if self.config.name == "combined-csv":
             return [
@@ -244,7 +243,7 @@ class Newsqa(datasets.GeneratorBasedBuilder):
                     csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
                 )
                 _ = next(csv_reader)
-                for id_, row in enumerate(csv_reader):
+                for row in csv_reader:
                     if row:
                         yield row[0], {
                             "story_id": row[0],
@@ -263,12 +262,13 @@ class Newsqa(datasets.GeneratorBasedBuilder):
                     questions = []
 
                     for ques in iter["questions"]:
-                        dict1 = {}
-                        dict1["q"] = ques["q"]
-                        if "isAnswerAbsent" in ques.keys():
-                            dict1["isAnswerAbsent"] = ques["isAnswerAbsent"]
-                        else:
-                            dict1["isAnswerAbsent"] = 0.0
+                        dict1 = {
+                            "q": ques["q"],
+                            "isAnswerAbsent": ques["isAnswerAbsent"]
+                            if "isAnswerAbsent" in ques.keys()
+                            else 0.0,
+                        }
+
                         if "isQuestionBad" in ques.keys():
                             dict1["isQuestionBad"] = ques["isQuestionBad"]
                         else:
@@ -280,9 +280,8 @@ class Newsqa(datasets.GeneratorBasedBuilder):
 
                         answers = []
                         for ans in ques["answers"]:
-                            dict2 = {}
-                            dict2["sourcerAnswers"] = []
-                            for index, i in enumerate(ans["sourcerAnswers"]):
+                            dict2 = {"sourcerAnswers": []}
+                            for i in ans["sourcerAnswers"]:
                                 dict_temp = {"s": 0, "e": 0, "noAnswer": False}
                                 for keys in i.keys():
                                     dict_temp[keys] = i[keys]
@@ -294,9 +293,8 @@ class Newsqa(datasets.GeneratorBasedBuilder):
 
                         validated_answers = []
                         for ans in ques["answers"]:
-                            dict2 = {}
-                            dict2["sourcerAnswers"] = []
-                            for index, i in enumerate(ans["sourcerAnswers"]):
+                            dict2 = {"sourcerAnswers": []}
+                            for i in ans["sourcerAnswers"]:
                                 dict_temp = {"s": 0, "e": 0, "noAnswer": False, "count": 0}
                                 for keys in i.keys():
                                     dict_temp[keys] = i[keys]
@@ -321,7 +319,7 @@ class Newsqa(datasets.GeneratorBasedBuilder):
                     csv_file, quotechar='"', delimiter=",", quoting=csv.QUOTE_ALL, skipinitialspace=True
                 )
                 _ = next(csv_reader)
-                for id_, row in enumerate(csv_reader):
+                for row in csv_reader:
                     if row:
                         # print (row)
                         yield row[0], {

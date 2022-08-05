@@ -135,10 +135,9 @@ class Matinf(datasets.GeneratorBasedBuilder):
 
         if not os.path.exists(data_dir):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('matinf', data_dir=...)` that includes files unzipped from the MATINF zip. Manual download instructions: {}".format(
-                    data_dir, self.manual_download_instructions
-                )
+                f"{data_dir} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('matinf', data_dir=...)` that includes files unzipped from the MATINF zip. Manual download instructions: {self.manual_download_instructions}"
             )
+
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
@@ -161,7 +160,7 @@ class Matinf(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf8") as f:
             reader = csv.DictReader(f)
 
-            for n, row in enumerate(reader):
+            for row in reader:
                 example = {feat: row[feat] for feat in self.config.text_features}
                 example["id"] = row["id"]
 

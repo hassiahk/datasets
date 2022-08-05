@@ -15,6 +15,7 @@
 """Hatexplain: A Benchmark Dataset for Explainable Hate Speech Detection"""
 
 
+
 import json
 
 import datasets
@@ -46,8 +47,8 @@ _LICENSE = "cc-by-4.0"
 
 _URL = "https://raw.githubusercontent.com/punyajoy/HateXplain/master/Data/"
 _URLS = {
-    "dataset": _URL + "dataset.json",
-    "post_id_divisions": _URL + "post_id_divisions.json",
+    "dataset": f"{_URL}dataset.json",
+    "post_id_divisions": f"{_URL}post_id_divisions.json",
 }
 
 

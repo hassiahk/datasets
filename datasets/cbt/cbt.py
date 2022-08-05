@@ -15,6 +15,7 @@
 """Children's Book Test Dataset."""
 
 
+
 import os
 
 import datasets
@@ -45,26 +46,30 @@ _LICENSE = """GNU Free Documentation License v1.3"""
 ZIP_URL = "http://www.thespermwhale.com/jaseweston/babi/CBTest.tgz"
 dir = "CBTest/data/"
 paths = {
-    "raw": {"train": dir + "cbt_train.txt", "valid": dir + "cbt_valid.txt", "test": dir + "cbt_test.txt"},
+    "raw": {
+        "train": f"{dir}cbt_train.txt",
+        "valid": f"{dir}cbt_valid.txt",
+        "test": f"{dir}cbt_test.txt",
+    },
     "V": {
-        "train": dir + "cbtest_V_train.txt",
-        "valid": dir + "cbtest_V_valid_2000ex.txt",
-        "test": dir + "cbtest_V_test_2500ex.txt",
+        "train": f"{dir}cbtest_V_train.txt",
+        "valid": f"{dir}cbtest_V_valid_2000ex.txt",
+        "test": f"{dir}cbtest_V_test_2500ex.txt",
     },
     "P": {
-        "train": dir + "cbtest_P_train.txt",
-        "valid": dir + "cbtest_P_valid_2000ex.txt",
-        "test": dir + "cbtest_P_test_2500ex.txt",
+        "train": f"{dir}cbtest_P_train.txt",
+        "valid": f"{dir}cbtest_P_valid_2000ex.txt",
+        "test": f"{dir}cbtest_P_test_2500ex.txt",
     },
     "NE": {
-        "train": dir + "cbtest_NE_train.txt",
-        "valid": dir + "cbtest_NE_valid_2000ex.txt",
-        "test": dir + "cbtest_NE_test_2500ex.txt",
+        "train": f"{dir}cbtest_NE_train.txt",
+        "valid": f"{dir}cbtest_NE_valid_2000ex.txt",
+        "test": f"{dir}cbtest_NE_test_2500ex.txt",
     },
     "CN": {
-        "train": dir + "cbtest_CN_train.txt",
-        "valid": dir + "cbtest_CN_valid_2000ex.txt",
-        "test": dir + "cbtest_CN_test_2500ex.txt",
+        "train": f"{dir}cbtest_CN_train.txt",
+        "valid": f"{dir}cbtest_CN_valid_2000ex.txt",
+        "test": f"{dir}cbtest_CN_test_2500ex.txt",
     },
 }
 
@@ -162,7 +167,7 @@ class Cbt(datasets.GeneratorBasedBuilder):
             with open(filepath, encoding="utf-8") as f:
                 sentences = []
                 example_idx = 0
-                for idx, line in enumerate(f):
+                for line in f:
                     if line.strip() == "":
                         continue
 
@@ -183,34 +188,30 @@ class Cbt(datasets.GeneratorBasedBuilder):
 
                         sentences = []
                         example_idx += 1
+                    elif len(line.split()[0]) == 1:
+                        sentences.append(line[1:].strip())
                     else:
-                        if len(line.split()[0]) == 1:
-                            sentences.append(line[1:].strip())
-                        else:
-                            sentences.append(line[2:].strip())
-                            # Text might contain double spaces.
+                        sentences.append(line[2:].strip())
+                        # Text might contain double spaces.
         else:
             with open(filepath, encoding="utf=8") as f:
                 book_idx = 0
                 book_sentences = []
                 for idx, line in enumerate(f):
                     if line[:12] == "_BOOK_TITLE_":
-                        if idx == 0:  # First line:
-                            title = line.split(":")[1].strip()
-                        else:
+                        if idx != 0:
                             yield book_idx, {
                                 "title": title,
                                 "content": "".join(book_sentences),
                             }
-                            title = line.split(":")[1].strip()
                             book_sentences = []
                             book_idx += 1
+                        title = line.split(":")[1].strip()
                     else:
                         book_sentences.append(line)
-                else:
-                    yield book_idx, {
-                        "title": title,
-                        "content": "".join(book_sentences),
-                    }
-                    book_sentences = []
-                    book_idx += 1
+                yield book_idx, {
+                    "title": title,
+                    "content": "".join(book_sentences),
+                }
+                book_sentences = []
+                book_idx += 1

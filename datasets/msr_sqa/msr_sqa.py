@@ -82,13 +82,16 @@ def _parse_answer_coordinates(answer_coordinate_str):
       answer_coordinates: A list of answer cordinates.
     """
     try:
-        answer_coordinates = []
         coords = ast.literal_eval(answer_coordinate_str)
-        for row_index, column_index in sorted(ast.literal_eval(coord) for coord in coords):
-            answer_coordinates.append({"row_index": row_index, "column_index": column_index})
-        return answer_coordinates
+        return [
+            {"row_index": row_index, "column_index": column_index}
+            for row_index, column_index in sorted(
+                ast.literal_eval(coord) for coord in coords
+            )
+        ]
+
     except SyntaxError:
-        raise ValueError("Unable to evaluate %s" % answer_coordinate_str)
+        raise ValueError(f"Unable to evaluate {answer_coordinate_str}")
 
 
 def _parse_answer_text(answer_text_str):
@@ -102,12 +105,9 @@ def _parse_answer_text(answer_text_str):
       answer_texts: A list of answers.
     """
     try:
-        answer_texts = []
-        for value in ast.literal_eval(answer_text_str):
-            answer_texts.append(value)
-        return answer_texts
+        return list(ast.literal_eval(answer_text_str))
     except SyntaxError:
-        raise ValueError("Unable to evaluate %s" % answer_text_str)
+        raise ValueError(f"Unable to evaluate {answer_text_str}")
 
 
 class MsrSQA(datasets.GeneratorBasedBuilder):

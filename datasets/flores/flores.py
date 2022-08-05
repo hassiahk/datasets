@@ -58,9 +58,12 @@ class FloresConfig(datasets.BuilderConfig):
             as target in supervised mode. For example: ("se", "en").
           **kwargs: keyword arguments forwarded to super.
         """
-        name = "%s%s" % (language_pair[0], language_pair[1])
+        name = f"{language_pair[0]}{language_pair[1]}"
 
-        description = ("Translation dataset from %s to %s") % (language_pair[0], language_pair[1])
+        description = (
+            f"Translation dataset from {language_pair[0]} to {language_pair[1]}"
+        )
+
         super(FloresConfig, self).__init__(
             name=name,
             description=description,
@@ -108,12 +111,17 @@ class Flores(datasets.GeneratorBasedBuilder):
         non_en = source if target == "en" else target
         path_tmpl = "{dl_dir}/wikipedia_en_ne_si_test_sets/wikipedia.{split}.{non_en}-en." "{lang}"
 
-        files = {}
-        for split in ("dev", "devtest"):
-            files[split] = {
-                "source_file": path_tmpl.format(dl_dir=dl_dir, split=split, non_en=non_en, lang=source),
-                "target_file": path_tmpl.format(dl_dir=dl_dir, split=split, non_en=non_en, lang=target),
+        files = {
+            split: {
+                "source_file": path_tmpl.format(
+                    dl_dir=dl_dir, split=split, non_en=non_en, lang=source
+                ),
+                "target_file": path_tmpl.format(
+                    dl_dir=dl_dir, split=split, non_en=non_en, lang=target
+                ),
             }
+            for split in ("dev", "devtest")
+        }
 
         return [
             datasets.SplitGenerator(name=datasets.Split.VALIDATION, gen_kwargs=files["dev"]),

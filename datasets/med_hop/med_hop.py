@@ -110,6 +110,6 @@ class MedHop(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         with open(filepath, encoding="utf-8") as f:
             examples = json.load(f)
-            for i, example in enumerate(examples):
+            for example in examples:
                 example["question"] = example.pop("query")
                 yield example["id"], example

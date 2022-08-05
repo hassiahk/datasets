@@ -74,9 +74,7 @@ class MyanmarNews(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             rdr = csv.reader(f, delimiter="\t")
             next(rdr)
-            rownum = 0
-            for row in rdr:
-                rownum += 1
+            for rownum, row in enumerate(rdr, start=1):
                 yield rownum, {
                     "text": row[0],
                     "category": row[1],

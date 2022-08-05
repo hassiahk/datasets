@@ -15,6 +15,7 @@
 """GEM: Generation Evaluation Metrics supporting datasets"""
 
 
+
 import csv
 import json
 import os
@@ -317,21 +318,19 @@ _SGD_ACTS = [
     "THANK_YOU",
 ]
 
-_XSUM_REMOVE_LINES = set(
-    [
-        "Share this with\n",
-        "Email\n",
-        "Facebook\n",
-        "Messenger\n",
-        "Twitter\n",
-        "Pinterest\n",
-        "WhatsApp\n",
-        "Linkedin\n",
-        "LinkedIn\n",
-        "Copy this link\n",
-        "These are external links and will open in a new window\n",
-    ]
-)
+_XSUM_REMOVE_LINES = {
+    "Share this with\n",
+    "Email\n",
+    "Facebook\n",
+    "Messenger\n",
+    "Twitter\n",
+    "Pinterest\n",
+    "WhatsApp\n",
+    "Linkedin\n",
+    "LinkedIn\n",
+    "Copy this link\n",
+    "These are external links and will open in a new window\n",
+}
 
 
 class Gem(datasets.GeneratorBasedBuilder):
@@ -628,7 +627,9 @@ class Gem(datasets.GeneratorBasedBuilder):
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
                     gen_kwargs={
-                        "filepath": os.path.join(dl_dir["train"], lang + "_train.jsonl"),
+                        "filepath": os.path.join(
+                            dl_dir["train"], f"{lang}_train.jsonl"
+                        ),
                         "split": "train",
                         "lang": lang,
                         "filepaths": dl_dir["bad_ids"],
@@ -637,7 +638,9 @@ class Gem(datasets.GeneratorBasedBuilder):
                 datasets.SplitGenerator(
                     name=datasets.Split.VALIDATION,
                     gen_kwargs={
-                        "filepath": os.path.join(dl_dir["validation"], lang + "_val.jsonl"),
+                        "filepath": os.path.join(
+                            dl_dir["validation"], f"{lang}_val.jsonl"
+                        ),
                         "split": "validation",
                         "lang": lang,
                         "filepaths": dl_dir["bad_ids"],
@@ -646,7 +649,9 @@ class Gem(datasets.GeneratorBasedBuilder):
                 datasets.SplitGenerator(
                     name=datasets.Split.TEST,
                     gen_kwargs={
-                        "filepath": os.path.join(dl_dir["test"], lang + "_test.jsonl"),
+                        "filepath": os.path.join(
+                            dl_dir["test"], f"{lang}_test.jsonl"
+                        ),
                         "split": "test",
                         "lang": lang,
                         "filepaths": dl_dir["bad_ids"],
@@ -656,12 +661,15 @@ class Gem(datasets.GeneratorBasedBuilder):
                 datasets.SplitGenerator(
                     name=challenge_split,
                     gen_kwargs={
-                        "filepath": os.path.join(dl_dir["challenge_set"], self.config.name, filename),
+                        "filepath": os.path.join(
+                            dl_dir["challenge_set"], self.config.name, filename
+                        ),
                         "split": challenge_split,
                     },
                 )
                 for challenge_split, filename in challenge_sets
             ]
+
         elif self.config.name == "schema_guided_dialog":
             challenge_sets = [
                 ("challenge_train_sample", "train_schema_guided_dialog_RandomSample500_reformatted.json"),
@@ -878,13 +886,26 @@ class Gem(datasets.GeneratorBasedBuilder):
         elif self.config.name == "xsum":
             challenge_sets = [
                 ("challenge_train_sample", "train_xsum_RandomSample500.json"),
-                ("challenge_validation_sample", "validation_xsum_RandomSample500.json"),
-                ("challenge_test_backtranslation", "test_xsum_BackTranslation500.json"),
-                ("challenge_test_bfp_02", "test_xsum_ButterFingersPerturbation_p=0.02_500.json"),
-                ("challenge_test_bfp_05", "test_xsum_ButterFingersPerturbation_p=0.05_500.json"),
+                (
+                    "challenge_validation_sample",
+                    "validation_xsum_RandomSample500.json",
+                ),
+                (
+                    "challenge_test_backtranslation",
+                    "test_xsum_BackTranslation500.json",
+                ),
+                (
+                    "challenge_test_bfp_02",
+                    "test_xsum_ButterFingersPerturbation_p=0.02_500.json",
+                ),
+                (
+                    "challenge_test_bfp_05",
+                    "test_xsum_ButterFingersPerturbation_p=0.05_500.json",
+                ),
                 ("challenge_test_nopunc", "test_xsum_WithoutPunctuation500.json"),
-                ("challenge_test_covid", f"en_test_covid19.jsonl"),
+                ("challenge_test_covid", "en_test_covid19.jsonl"),
             ]
+
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,

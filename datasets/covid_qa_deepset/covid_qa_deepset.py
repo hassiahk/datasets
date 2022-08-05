@@ -15,6 +15,7 @@
 """COVID-QA: A Question Answering Dataset for COVID-19."""
 
 
+
 import json
 
 import datasets
@@ -44,7 +45,7 @@ _HOMEPAGE = "https://github.com/deepset-ai/COVID-QA"
 _LICENSE = "Apache License 2.0"
 
 _URL = "https://raw.githubusercontent.com/deepset-ai/COVID-QA/master/data/question-answering/"
-_URLs = {"covid_qa_deepset": _URL + "COVID-QA.json"}
+_URLs = {"covid_qa_deepset": f"{_URL}COVID-QA.json"}
 
 
 class CovidQADeepset(datasets.GeneratorBasedBuilder):

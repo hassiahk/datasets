@@ -85,9 +85,9 @@ class AcronymIdentification(datasets.GeneratorBasedBuilder):
             resp = {
                 "id": d["id"],
                 "tokens": d["tokens"],
+                "labels": d["labels"]
+                if datatype != "test"
+                else ["O"] * len(d["tokens"]),
             }
-            if datatype != "test":
-                resp["labels"] = d["labels"]
-            else:
-                resp["labels"] = ["O"] * len(d["tokens"])
+
             yield sentence_counter, resp

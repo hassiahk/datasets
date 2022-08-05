@@ -104,12 +104,10 @@ class IgboNer(datasets.GeneratorBasedBuilder):
                 for id_, row in enumerate(f):
                     row = row.strip().split("\t")
                     content_n = row[0]
-                    if content_n in dictionary.keys():
+                    if content_n in dictionary:
                         (dictionary[content_n]["sentences"]).append(row[1])
                     else:
-                        dictionary[content_n] = {}
-                        dictionary[content_n]["named_entity"] = row[1]
-                        dictionary[content_n]["sentences"] = [row[1]]
+                        dictionary[content_n] = {"named_entity": row[1], "sentences": [row[1]]}
                     yield id_, {
                         "content_n": content_n,
                         "named_entity": dictionary[content_n]["named_entity"],

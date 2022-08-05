@@ -15,6 +15,7 @@
 """AQUA-RAT (Algebra Question Answering with Rationales) Dataset"""
 
 
+
 import json
 
 import datasets
@@ -53,11 +54,15 @@ limitations under the License.
 
 _BASE_URL = "https://raw.githubusercontent.com/deepmind/AQuA/master/"
 _URLs = {
-    "raw": {"train": _BASE_URL + "train.json", "dev": _BASE_URL + "dev.json", "test": _BASE_URL + "test.json"},
+    "raw": {
+        "train": f"{_BASE_URL}train.json",
+        "dev": f"{_BASE_URL}dev.json",
+        "test": f"{_BASE_URL}test.json",
+    },
     "tokenized": {
-        "train": _BASE_URL + "train.tok.json",
-        "dev": _BASE_URL + "dev.tok.json",
-        "test": _BASE_URL + "test.tok.json",
+        "train": f"{_BASE_URL}train.tok.json",
+        "dev": f"{_BASE_URL}dev.tok.json",
+        "test": f"{_BASE_URL}test.tok.json",
     },
 }
 

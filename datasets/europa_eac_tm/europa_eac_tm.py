@@ -112,9 +112,7 @@ def _find_sentence(translation, language):
     # Retrieve the first <tuv> children of translation having xml:lang tag equal to language
     namespaces = {"xml": "http://www.w3.org/XML/1998/namespace"}
     seg_tag = translation.find(path=f".//tuv[@xml:lang='{language}']/seg", namespaces=namespaces)
-    if seg_tag is not None:
-        return seg_tag.text
-    return None
+    return seg_tag.text if seg_tag is not None else None
 
 
 class EuropaEacTMConfig(datasets.BuilderConfig):

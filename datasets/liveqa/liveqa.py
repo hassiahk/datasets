@@ -103,9 +103,7 @@ class LiveQA(datasets.GeneratorBasedBuilder):
         data = json.loads(data_raw)
         games = data["passages"]
 
-        game_id = -1  # "id" field is always 1 in the original dataset regardless of game
-        for game in games:
-            game_id += 1
+        for game_id, game in enumerate(games):
             passages = []
             for passage in game["passage"]:
                 is_question = "question" in passage

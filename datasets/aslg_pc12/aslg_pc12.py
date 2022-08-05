@@ -72,11 +72,10 @@ class ASLGPC12(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, gloss_path, text_path):
         """Yields examples."""
 
-        gloss_f = open(gloss_path, "r", encoding="utf-8")
-        text_f = open(text_path, "r", encoding="utf-8")
+        with open(gloss_path, "r", encoding="utf-8") as gloss_f:
+            text_f = open(text_path, "r", encoding="utf-8")
 
-        for i, (gloss, text) in enumerate(zip(gloss_f, text_f)):
-            yield i, {"gloss": gloss, "text": text}
+            for i, (gloss, text) in enumerate(zip(gloss_f, text_f)):
+                yield i, {"gloss": gloss, "text": text}
 
-        gloss_f.close()
         text_f.close()

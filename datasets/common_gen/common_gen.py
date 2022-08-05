@@ -90,7 +90,7 @@ class CommonGen(datasets.GeneratorBasedBuilder):
                 row = row.replace(", }", "}")  # Fix possible JSON format error
                 data = json.loads(row)
 
-                rand_order = [word for word in data["concept_set"].split("#")]
+                rand_order = list(data["concept_set"].split("#"))
                 random.shuffle(rand_order)
 
                 if split == "test":

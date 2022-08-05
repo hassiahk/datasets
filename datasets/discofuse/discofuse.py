@@ -127,46 +127,45 @@ class Discofuse(datasets.GeneratorBasedBuilder):
                         gen_kwargs={"filepath": os.path.join(data_dir, "dev.tsv")},
                     ),
                 ]
-        else:
-            if self.config.name == "discofuse-wikipedia":
-                dl_dir = dl_manager.download_and_extract(self.config.data_url)
-                data_dir = os.path.join(dl_dir, "discofuse_v1/wikipedia")
-                if self.config.balanced:
-                    return [
-                        datasets.SplitGenerator(
-                            name=datasets.Split.TRAIN,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={"filepath": os.path.join(data_dir, "train_balanced.tsv")},
-                        ),
-                        datasets.SplitGenerator(
-                            name=datasets.Split.TEST,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={"filepath": os.path.join(data_dir, "test_balanced.tsv")},
-                        ),
-                        datasets.SplitGenerator(
-                            name=datasets.Split.VALIDATION,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={"filepath": os.path.join(data_dir, "dev_balanced.tsv")},
-                        ),
-                    ]
-                else:
-                    return [
-                        datasets.SplitGenerator(
-                            name=datasets.Split.TRAIN,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={"filepath": os.path.join(data_dir, "train.tsv")},
-                        ),
-                        datasets.SplitGenerator(
-                            name=datasets.Split.TEST,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={"filepath": os.path.join(data_dir, "test.tsv")},
-                        ),
-                        datasets.SplitGenerator(
-                            name=datasets.Split.VALIDATION,
-                            # These kwargs will be passed to _generate_examples
-                            gen_kwargs={"filepath": os.path.join(data_dir, "dev.tsv")},
-                        ),
-                    ]
+        elif self.config.name == "discofuse-wikipedia":
+            dl_dir = dl_manager.download_and_extract(self.config.data_url)
+            data_dir = os.path.join(dl_dir, "discofuse_v1/wikipedia")
+            if self.config.balanced:
+                return [
+                    datasets.SplitGenerator(
+                        name=datasets.Split.TRAIN,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": os.path.join(data_dir, "train_balanced.tsv")},
+                    ),
+                    datasets.SplitGenerator(
+                        name=datasets.Split.TEST,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": os.path.join(data_dir, "test_balanced.tsv")},
+                    ),
+                    datasets.SplitGenerator(
+                        name=datasets.Split.VALIDATION,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": os.path.join(data_dir, "dev_balanced.tsv")},
+                    ),
+                ]
+            else:
+                return [
+                    datasets.SplitGenerator(
+                        name=datasets.Split.TRAIN,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": os.path.join(data_dir, "train.tsv")},
+                    ),
+                    datasets.SplitGenerator(
+                        name=datasets.Split.TEST,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": os.path.join(data_dir, "test.tsv")},
+                    ),
+                    datasets.SplitGenerator(
+                        name=datasets.Split.VALIDATION,
+                        # These kwargs will be passed to _generate_examples
+                        gen_kwargs={"filepath": os.path.join(data_dir, "dev.tsv")},
+                    ),
+                ]
 
     def _generate_examples(self, filepath):
         """Yields examples."""

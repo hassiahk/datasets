@@ -101,23 +101,22 @@ class HyperpartisanNewsDetection(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         urls = {
             datasets.Split.TRAIN: {
-                "articles_file": _URL_BASE + "articles-training-" + self.config.name + "-20181122.zip?download=1",
-                "labels_file": _URL_BASE + "ground-truth-training-" + self.config.name + "-20181122.zip?download=1",
-            },
+                "articles_file": f"{_URL_BASE}articles-training-{self.config.name}-20181122.zip?download=1",
+                "labels_file": f"{_URL_BASE}ground-truth-training-{self.config.name}-20181122.zip?download=1",
+            }
         }
+
         if self.config.name == "bypublisher":
             urls[datasets.Split.VALIDATION] = {
-                "articles_file": _URL_BASE + "articles-training-" + self.config.name + "-20181122.zip?download=1",
-                "labels_file": _URL_BASE + "ground-truth-training-" + self.config.name + "-20181122.zip?download=1",
+                "articles_file": f"{_URL_BASE}articles-training-{self.config.name}-20181122.zip?download=1",
+                "labels_file": f"{_URL_BASE}ground-truth-training-{self.config.name}-20181122.zip?download=1",
             }
 
-        data_dir = {}
-        for key in urls:
-            data_dir[key] = dl_manager.download_and_extract(urls[key])
 
+        data_dir = {key: dl_manager.download_and_extract(urls[key]) for key in urls}
         splits = []
-        for split in data_dir:
-            for key in data_dir[split]:
+        for split, value in data_dir.items():
+            for key in value:
                 data_dir[split][key] = os.path.join(data_dir[split][key], os.listdir(data_dir[split][key])[0])
             splits.append(datasets.SplitGenerator(name=split, gen_kwargs=data_dir[split]))
         return splits
@@ -137,16 +136,19 @@ class HyperpartisanNewsDetection(datasets.GeneratorBasedBuilder):
             tree = ET.parse(f_articles)
             root = tree.getroot()
             for idx, article in enumerate(root):
-                example = {}
-                example["title"] = article.attrib["title"]
-                example["published_at"] = article.attrib.get("published-at", "")
+                example = {
+                    "title": article.attrib["title"],
+                    "published_at": article.attrib.get("published-at", ""),
+                }
+
                 example["id"] = article.attrib["id"]
                 example = {**example, **labels[example["id"]]}
                 example["hyperpartisan"] = example["hyperpartisan"] == "true"
 
-                example["text"] = ""
-                for child in article:
-                    example["text"] += ET.tostring(child).decode() + "\n"
+                example["text"] = "".join(
+                    ET.tostring(child).decode() + "\n" for child in article
+                )
+
                 example["text"] = example["text"].strip()
                 del example["id"]
                 yield idx, example

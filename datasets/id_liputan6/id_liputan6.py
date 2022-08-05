@@ -109,37 +109,43 @@ class IdLiputan6(datasets.GeneratorBasedBuilder):
         data_dir = os.path.abspath(os.path.expanduser(dl_manager.manual_dir))
         if not os.path.exists(data_dir):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('id_liputan6', "
-                "'canonical', data_dir=...)`. Manual download instructions:\n{}".format(
-                    data_dir, self.manual_download_instructions
-                )
+                f"{data_dir} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('id_liputan6', 'canonical', data_dir=...)`. Manual download instructions:\n{self.manual_download_instructions}"
             )
+
         split_generators = [
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
                 gen_kwargs={
-                    "article_dir": os.path.join(data_dir, "{}/dev".format(self.config.name)),
+                    "article_dir": os.path.join(
+                        data_dir, f"{self.config.name}/dev"
+                    ),
                     "split": "dev",
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
                 gen_kwargs={
-                    "article_dir": os.path.join(data_dir, "{}/test".format(self.config.name)),
+                    "article_dir": os.path.join(
+                        data_dir, f"{self.config.name}/test"
+                    ),
                     "split": "test",
                 },
             ),
         ]
+
         if self.config.name == "canonical":
             split_generators.append(
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
                     gen_kwargs={
-                        "article_dir": os.path.join(data_dir, "{}/train".format(self.config.name)),
+                        "article_dir": os.path.join(
+                            data_dir, f"{self.config.name}/train"
+                        ),
                         "split": "train",
                     },
                 )
             )
+
         return split_generators
 
     def _generate_examples(self, article_dir, split):
@@ -151,10 +157,9 @@ class IdLiputan6(datasets.GeneratorBasedBuilder):
             [re.compile(r"\[ ([^]]+) ]"), r"[\1]"],
         ]
         logger.info("⏳ Generating %s examples from = %s", split, article_dir)
-        guid = 0
-        for path in sorted(
+        for guid, path in enumerate(sorted(
             glob.glob(os.path.join(article_dir, "**/*.json"), recursive=True), key=lambda p: int(Path(p).stem)
-        ):
+        )):
             with open(path, encoding="utf-8") as f:
                 data = json.load(f)
                 clean_article = " ".join([" ".join(i) for i in data["clean_article"]])
@@ -173,4 +178,3 @@ class IdLiputan6(datasets.GeneratorBasedBuilder):
                     "clean_summary": clean_summary,
                     "extractive_summary": extractive_summary,
                 }
-            guid += 1

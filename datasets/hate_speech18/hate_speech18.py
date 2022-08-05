@@ -95,7 +95,7 @@ class HateSpeech18(datasets.GeneratorBasedBuilder):
 
                 all_files_path = os.path.join(filepath, "all_files")
 
-                path = os.path.join(all_files_path, file_id + ".txt")
+                path = os.path.join(all_files_path, f"{file_id}.txt")
 
                 with open(path, encoding="utf-8") as file:
                     text = file.read()

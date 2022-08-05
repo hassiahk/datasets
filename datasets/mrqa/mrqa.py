@@ -174,15 +174,21 @@ class Mrqa(datasets.GeneratorBasedBuilder):
                         qid = qa["qid"]
                         question = qa["question"].strip()
                         question_tokens = [{"tokens": t[0], "offsets": t[1]} for t in qa["question_tokens"]]
-                        detected_answers = []
-                        for detect_ans in qa["detected_answers"]:
-                            detected_answers.append(
-                                {
-                                    "text": detect_ans["text"].strip(),
-                                    "char_spans": [{"start": t[0], "end": t[1]} for t in detect_ans["char_spans"]],
-                                    "token_spans": [{"start": t[0], "end": t[1]} for t in detect_ans["token_spans"]],
-                                }
-                            )
+                        detected_answers = [
+                            {
+                                "text": detect_ans["text"].strip(),
+                                "char_spans": [
+                                    {"start": t[0], "end": t[1]}
+                                    for t in detect_ans["char_spans"]
+                                ],
+                                "token_spans": [
+                                    {"start": t[0], "end": t[1]}
+                                    for t in detect_ans["token_spans"]
+                                ],
+                            }
+                            for detect_ans in qa["detected_answers"]
+                        ]
+
                         answers = qa["answers"]
                         yield f"{source}_{qid}", {
                             "subset": subset,

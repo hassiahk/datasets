@@ -210,14 +210,15 @@ class Imppres(datasets.GeneratorBasedBuilder):
         # By default the archives will be extracted and a path to a cached folder where they are extracted is returned instead of the archive
         my_urls = _URLs["default"]
         base_config = self.config.name.split("_")[0]
-        secondary_config = self.config.name.split(base_config + "_")[1]
+        secondary_config = self.config.name.split(f"{base_config}_")[1]
         data_dir = os.path.join(dl_manager.download_and_extract(my_urls), "IMPPRES", base_config)
         return [
             datasets.SplitGenerator(
                 name=secondary_config,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": os.path.join(data_dir, secondary_config + ".jsonl"),
+                    "filepath": os.path.join(
+                        data_dir, f"{secondary_config}.jsonl"
+                    ),
                     "split": "test",
                 },
             )

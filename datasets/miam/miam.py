@@ -388,8 +388,7 @@ class Miam(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         data_files = dl_manager.download(self.config.data_url)
-        splits = []
-        splits.append(
+        splits = [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
                 gen_kwargs={
@@ -397,7 +396,8 @@ class Miam(datasets.GeneratorBasedBuilder):
                     "split": "train",
                 },
             )
-        )
+        ]
+
         splits.append(
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,

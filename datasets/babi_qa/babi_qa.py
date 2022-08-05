@@ -885,7 +885,7 @@ class BabiQa(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             story = []
             example_idx = 0
-            for idx, line in enumerate(f):
+            for line in f:
                 if line.strip() == "":
                     if story != []:
                         yield example_idx, {"story": story}
@@ -941,6 +941,5 @@ class BabiQa(datasets.GeneratorBasedBuilder):
                                 "answer": "",
                             }
                         )
-            else:  # After last line
-                if story != []:
-                    yield example_idx, {"story": story}
+            if story != []:
+                yield example_idx, {"story": story}

@@ -69,7 +69,7 @@ class CfqConfig(datasets.BuilderConfig):
         super(CfqConfig, self).__init__(
             name=name, version=datasets.Version("1.0.1"), description=_DESCRIPTION, **kwargs
         )
-        self.split_file = os.path.join(directory, name + ".json")
+        self.split_file = os.path.join(directory, f"{name}.json")
 
 
 _QUESTION = "question"

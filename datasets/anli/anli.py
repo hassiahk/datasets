@@ -104,9 +104,9 @@ class ANLI(datasets.GeneratorBasedBuilder):
 
         anli_path = os.path.join(downloaded_dir, "anli_v0.1")
 
-        path_dict = dict()
+        path_dict = {}
         for round_tag in ["R1", "R2", "R3"]:
-            path_dict[round_tag] = dict()
+            path_dict[round_tag] = {}
             for split_name in ["train", "dev", "test"]:
                 path_dict[round_tag][split_name] = os.path.join(anli_path, round_tag, f"{split_name}.jsonl")
 
@@ -134,7 +134,7 @@ class ANLI(datasets.GeneratorBasedBuilder):
         Yields:
           dictionaries containing "premise", "hypothesis" and "label" strings
         """
-        for idx, line in enumerate(open(filepath, "rb")):
+        for line in open(filepath, "rb"):
             if line is not None:
                 line = line.strip().decode("utf-8")
                 item = json.loads(line)

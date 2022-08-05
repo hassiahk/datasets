@@ -128,7 +128,7 @@ class Jfleg(datasets.GeneratorBasedBuilder):
             num_source = len(source_sentences)
 
         corrections = []
-        for n in range(0, 4):
+        for n in range(4):
             correction_file = filepath["ref{n}".format(n=n)]
             with open(correction_file, encoding="utf-8") as f:
                 correction_sentences = f.read().split("\n")
