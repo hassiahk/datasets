@@ -200,11 +200,15 @@ class Hkcancor(datasets.GeneratorBasedBuilder):
 
     def _info(self):
 
-        pos_tags_prf = datasets.Sequence(datasets.features.ClassLabel(names=[tag for tag in self.pos_map.keys()]))
+        pos_tags_prf = datasets.Sequence(
+            datasets.features.ClassLabel(names=list(self.pos_map.keys()))
+        )
+
 
         pos_tags_ud = datasets.Sequence(
-            datasets.features.ClassLabel(names=[tag for tag in set(self.pos_map.values())])
+            datasets.features.ClassLabel(names=list(set(self.pos_map.values())))
         )
+
 
         features = datasets.Features(
             {
@@ -250,7 +254,7 @@ class Hkcancor(datasets.GeneratorBasedBuilder):
             with open(filepath, encoding="utf-8") as f:
                 xml = f.read()
                 # Add dummy root node to form valid tree
-                xml = "<root>" + xml + "</root>"
+                xml = f"<root>{xml}</root>"
                 tree = ET.fromstring(xml)
 
             # Extract dialogue metadata

@@ -126,8 +126,8 @@ class HealthFact(datasets.GeneratorBasedBuilder):
                 row = [x if x != "nan" else "" for x in row]  # nan values changed to empty string
                 if split != "test":
                     if len(row) <= 9:
-                        elements = ["" for x in range(9 - len(row))]
-                        row = row + elements
+                        elements = ["" for _ in range(9 - len(row))]
+                        row += elements
                     (
                         claim_id,
                         claim,
@@ -139,12 +139,10 @@ class HealthFact(datasets.GeneratorBasedBuilder):
                         label,
                         subjects,
                     ) = row
-                    if label not in label_list:  # remove stray labels in dev.tsv, train.tsv
-                        label = -1
                 else:
                     if len(row) <= 10:
-                        elements = ["" for x in range(10 - len(row))]
-                        row = row + elements
+                        elements = ["" for _ in range(10 - len(row))]
+                        row += elements
                     (
                         _,
                         claim_id,
@@ -157,8 +155,8 @@ class HealthFact(datasets.GeneratorBasedBuilder):
                         label,
                         subjects,
                     ) = row
-                    if label not in label_list:  # remove stray labels in test.tsv
-                        label = -1
+                if label not in label_list:  # remove stray labels in dev.tsv, train.tsv
+                    label = -1
                 if label == "":
                     label = -1
                 yield row_id, {

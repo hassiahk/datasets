@@ -192,7 +192,6 @@ class ADECorpusV2(datasets.GeneratorBasedBuilder):
                 text, label = texts[i], labels[i]
                 yield i, {"text": text, "label": label}
 
-        # For Relation Extraction between drug and its effect.
         elif self.config.name == configs["RE_ade"]:
 
             texts, drugs, effects, drug_indexes, effect_indexes = [], [], [], [], []
@@ -205,12 +204,18 @@ class ADECorpusV2(datasets.GeneratorBasedBuilder):
 
                     # add index of drug and effect from text
                     effect_matches, drug_matches = [], []
-                    for match in re.finditer(effect, text):
-                        effect_matches.append({"start_char": match.start(), "end_char": match.end()})
+                    effect_matches.extend(
+                        {"start_char": match.start(), "end_char": match.end()}
+                        for match in re.finditer(effect, text)
+                    )
+
                     effect_indexes.append(effect_matches)
 
-                    for match in re.finditer(drug, text):
-                        drug_matches.append({"start_char": match.start(), "end_char": match.end()})
+                    drug_matches.extend(
+                        {"start_char": match.start(), "end_char": match.end()}
+                        for match in re.finditer(drug, text)
+                    )
+
                     drug_indexes.append(drug_matches)
 
                     texts.append(text)
@@ -230,7 +235,6 @@ class ADECorpusV2(datasets.GeneratorBasedBuilder):
 
                 yield idx, output
 
-        # For Relation Extraction between drug and its dosage.
         elif self.config.name == configs["RE_dosage"]:
 
             texts, drugs, dosages, drug_indexes, dosage_indexes = [], [], [], [], []
@@ -243,12 +247,18 @@ class ADECorpusV2(datasets.GeneratorBasedBuilder):
 
                     # add index of drug and effect from text
                     dosage_matches, drug_matches = [], []
-                    for match in re.finditer(dosage, text):
-                        dosage_matches.append({"start_char": match.start(), "end_char": match.end()})
+                    dosage_matches.extend(
+                        {"start_char": match.start(), "end_char": match.end()}
+                        for match in re.finditer(dosage, text)
+                    )
+
                     dosage_indexes.append(dosage_matches)
 
-                    for match in re.finditer(drug, text):
-                        drug_matches.append({"start_char": match.start(), "end_char": match.end()})
+                    drug_matches.extend(
+                        {"start_char": match.start(), "end_char": match.end()}
+                        for match in re.finditer(drug, text)
+                    )
+
                     drug_indexes.append(drug_matches)
 
                     texts.append(text)

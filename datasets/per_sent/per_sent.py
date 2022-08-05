@@ -71,8 +71,7 @@ class PerSent(datasets.GeneratorBasedBuilder):
             "TARGET_ENTITY": datasets.Value("string"),
             "DOCUMENT": datasets.Value("string"),
             "MASKED_DOCUMENT": datasets.Value("string"),
-        }
-        feature_dict.update({k: label for k in self.LABEL_COLS})
+        } | {k: label for k in self.LABEL_COLS}
 
         return datasets.DatasetInfo(
             description=_DESCRIPTION,
@@ -143,7 +142,6 @@ class PerSent(datasets.GeneratorBasedBuilder):
                     "TARGET_ENTITY": target,
                     "DOCUMENT": doc,
                     "MASKED_DOCUMENT": masked_doc,
-                }
-                example.update(dict(zip(self.LABEL_COLS, labels)))
+                } | zip(self.LABEL_COLS, labels)
 
                 yield id_, example

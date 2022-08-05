@@ -31,6 +31,7 @@ be found in the open Web or in Wikipedia. For details, please refer to our CIKM 
 """
 
 
+
 import json
 import os
 
@@ -62,9 +63,9 @@ _LICENSE = "CC BY 4.0"
 # This can be an arbitrary nested dict/list of URLs (see below in `_split_generators` method)
 _URL = "http://qa.mpi-inf.mpg.de/convex/"
 _URLs = {
-    "train": _URL + "ConvQuestions_train.zip",
-    "dev": _URL + "ConvQuestions_dev.zip",
-    "test": _URL + "ConvQuestions_test.zip",
+    "train": f"{_URL}ConvQuestions_train.zip",
+    "dev": f"{_URL}ConvQuestions_dev.zip",
+    "test": f"{_URL}ConvQuestions_test.zip",
 }
 
 

@@ -90,9 +90,7 @@ class ArCov19(datasets.GeneratorBasedBuilder):
 
     def _info(self):
 
-        features = {}
-
-        features["tweetID"] = datasets.Value("int64")
+        features = {"tweetID": datasets.Value("int64")}
 
         return datasets.DatasetInfo(
             # This is the description that will appear on the datasets page.

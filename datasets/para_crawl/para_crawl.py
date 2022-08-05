@@ -88,12 +88,12 @@ class ParaCrawlConfig(datasets.BuilderConfig):
         """
         # Validate the target language.
         if target_language not in _target_languages():
-            raise ValueError("Invalid target language: %s " % target_language)
+            raise ValueError(f"Invalid target language: {target_language} ")
 
         # Initialize the base class.
-        name = "en%s" % (target_language)
+        name = f"en{target_language}"
 
-        description = ("Translation dataset from English to %s.") % (target_language)
+        description = f"Translation dataset from English to {target_language}."
         super(ParaCrawlConfig, self).__init__(name=name, description=description, **kwargs)
 
         # Store the attributes.
@@ -149,9 +149,8 @@ class ParaCrawl(datasets.GeneratorBasedBuilder):
             for idx, line in enumerate(f):
                 line_parts = line.strip().split("\t")
                 if len(line_parts) != 2:
-                    msg = (
-                        "Wrong data format in line {}. The line '{}' does " "not have exactly one delimiter."
-                    ).format(idx, line)
+                    msg = f"Wrong data format in line {idx}. The line '{line}' does not have exactly one delimiter."
+
                     raise ValueError(msg)
                 source, target = line_parts[0].strip(), line_parts[1].strip()
                 yield idx, {"translation": {"en": source, target_language: target}}

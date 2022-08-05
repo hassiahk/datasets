@@ -118,8 +118,9 @@ class Cord19(datasets.GeneratorBasedBuilder):
         my_urls = _URL
         data_dir = dl_manager.download_and_extract(my_urls)
 
-        files = dict()
-        files["metadata"] = os.path.join(data_dir, CORD19_DATASET_DATE, "metadata.csv")
+        files = {
+            "metadata": os.path.join(data_dir, CORD19_DATASET_DATE, "metadata.csv")
+        }
 
         if "fulltext" in self.config.name:
             fulltext_dir_path = dl_manager.extract(
@@ -132,8 +133,10 @@ class Cord19(datasets.GeneratorBasedBuilder):
                 os.path.join(data_dir, CORD19_DATASET_DATE, "cord_19_embeddings.tar.gz")
             )
             files["embeddings"] = os.path.join(
-                embeddings_dir_path, "cord_19_embeddings_" + CORD19_DATASET_DATE + ".csv"
+                embeddings_dir_path,
+                f"cord_19_embeddings_{CORD19_DATASET_DATE}.csv",
             )
+
 
         return [
             datasets.SplitGenerator(

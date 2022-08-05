@@ -101,7 +101,10 @@ class ArabicPosDialect(datasets.GeneratorBasedBuilder):
         # TODO: Downloads the data and defines the splits
         # dl_manager is a datasets.download.DownloadManager that can be used to
         # download and extract URLs
-        urls_to_download = {dialect: _URL + "seg_plus_pos_{}.txt".format(dialect) for dialect in _DIALECTS}
+        urls_to_download = {
+            dialect: _URL + f"seg_plus_pos_{dialect}.txt" for dialect in _DIALECTS
+        }
+
         dl_dir = dl_manager.download_and_extract(urls_to_download)
         return [
             datasets.SplitGenerator(
@@ -121,7 +124,7 @@ class ArabicPosDialect(datasets.GeneratorBasedBuilder):
             segments = []
             pos_tags = []
             curr_sent = -1
-            for idx, row in enumerate(reader):
+            for row in reader:
                 # first example
                 if fold == -1:
                     fold = row["Fold"]

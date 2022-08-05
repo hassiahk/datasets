@@ -79,10 +79,9 @@ class KannadaNews(datasets.GeneratorBasedBuilder):
 
         if not os.path.exists(path_to_manual_file):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('kannada_news', data_dir=...)` that includes a file name {}. Manual download instructions: {})".format(
-                    path_to_manual_file, _TRAIN_FILENAME, self.manual_download_instructions
-                )
+                f"{path_to_manual_file} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('kannada_news', data_dir=...)` that includes a file name {_TRAIN_FILENAME}. Manual download instructions: {self.manual_download_instructions})"
             )
+
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
@@ -104,9 +103,7 @@ class KannadaNews(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             rdr = csv.reader(f, delimiter=",")
             next(rdr)
-            rownum = 0
-            for row in rdr:
-                rownum += 1
+            for rownum, row in enumerate(rdr, start=1):
                 yield rownum, {
                     "headline": row[0],
                     "label": row[1],

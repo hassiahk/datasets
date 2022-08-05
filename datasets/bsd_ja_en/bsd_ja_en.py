@@ -15,6 +15,7 @@
 """Japanese-English Business Scene Dialogue (BSD) dataset. """
 
 
+
 import json
 
 import datasets
@@ -71,9 +72,9 @@ _LICENSE = "CC BY-NC-SA 4.0"
 _REPO = "https://raw.githubusercontent.com/tsuruoka-lab/BSD/master/"
 
 _URLs = {
-    "train": _REPO + "train.json",
-    "dev": _REPO + "dev.json",
-    "test": _REPO + "test.json",
+    "train": f"{_REPO}train.json",
+    "dev": f"{_REPO}dev.json",
+    "test": f"{_REPO}test.json",
 }
 
 

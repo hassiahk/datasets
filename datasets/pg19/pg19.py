@@ -1,6 +1,7 @@
 """PG-19 language modeling benchmark - a set of books extracted from the Project Gutenberg books library"""
 
 
+
 import csv
 import json
 import os
@@ -41,7 +42,7 @@ One could use this dataset for benchmarking long-range language models, or use i
 _ASSET_ROOT_URL = "https://storage.googleapis.com/deepmind-gutenberg/"
 _STORAGE_API_ROOT_URL = "https://storage.googleapis.com/storage/v1/b/deepmind-gutenberg/o/"
 
-_METADATA_URL = _ASSET_ROOT_URL + "metadata.csv"
+_METADATA_URL = f"{_ASSET_ROOT_URL}metadata.csv"
 
 
 def flat_map(fn, arr):
@@ -102,7 +103,7 @@ class Pg19(datasets.GeneratorBasedBuilder):
 
         def download_listdir(url, local_filepath):
             root_url, prefix = url.rsplit("/", 1)
-            pages = fetch_all_pages(root_url, prefix + "/")
+            pages = fetch_all_pages(root_url, f"{prefix}/")
             items = flat_map(itemgetter("items"), pages)
             names = sorted(map(itemgetter("name"), items))
 

@@ -100,10 +100,11 @@ class EthPy150Open(datasets.GeneratorBasedBuilder):
         # It can accept any type or nested list/dict and will give back the same structure with the url replaced with path to local files.
         # By default the archives will be extracted and a path to a cached folder where they are extracted is returned instead of the archive
         urls = {
-            "train": _URL + "train__manifest.json",
-            "dev": _URL + "dev__manifest.json",
-            "test": _URL + "eval__manifest.json",
+            "train": f"{_URL}train__manifest.json",
+            "dev": f"{_URL}dev__manifest.json",
+            "test": f"{_URL}eval__manifest.json",
         }
+
         data_dir = dl_manager.download_and_extract(urls)
         return [
             datasets.SplitGenerator(
@@ -130,5 +131,4 @@ class EthPy150Open(datasets.GeneratorBasedBuilder):
         # The key is not important, it's more here for legacy reason (legacy from tfds)
 
         with open(filepath, encoding="utf-8") as f:
-            for id_, row in enumerate(json.load(f)):
-                yield id_, row
+            yield from enumerate(json.load(f))

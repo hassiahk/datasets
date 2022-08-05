@@ -157,18 +157,9 @@ class Conceptnet5(datasets.GeneratorBasedBuilder):
                     data = json.loads(s)
                     lang1 = row[2].split(b"/")[2].decode("utf-8")
                     lang2 = row[3].split(b"/")[2].decode("utf-8")
-                    if lang1 == lang2:
-                        lang = lang1
-                    else:
-                        lang = lang1 + "/" + lang2
-                    if "surfaceText" in data:
-                        sentence = data["surfaceText"].strip()
-                    else:
-                        sentence = ""
-                    if b"weight" in data:
-                        weight = float(data[b"weight"])
-                    else:
-                        weight = 1.0
+                    lang = lang1 if lang1 == lang2 else f"{lang1}/{lang2}"
+                    sentence = data["surfaceText"].strip() if "surfaceText" in data else ""
+                    weight = float(data[b"weight"]) if b"weight" in data else 1.0
                     yield id_, {
                         "sentence": sentence,
                         "full_rel": row[0].decode("utf-8"),
@@ -182,11 +173,10 @@ class Conceptnet5(datasets.GeneratorBasedBuilder):
                 else:
                     row = row.decode("utf-8").strip()
                     data = row.split("\t")
-                    if len(data) > 1:
-                        sentence = data[1]
-                        lang = data[4]
-                    else:
+                    if len(data) <= 1:
                         continue
+                    sentence = data[1]
+                    lang = data[4]
                     yield id_, {
                         "raw_data": row,
                         "sentence": sentence,

@@ -122,25 +122,24 @@ class Mlqa(datasets.GeneratorBasedBuilder):
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
                         "filepath": os.path.join(
                             os.path.join(dl_file, "mlqa-translate-train"),
-                            "{}_squad-translate-train-train-v1.1.json".format(lang),
+                            f"{lang}_squad-translate-train-train-v1.1.json",
                         )
                     },
                 ),
                 datasets.SplitGenerator(
                     name=datasets.Split.VALIDATION,
-                    # These kwargs will be passed to _generate_examples
                     gen_kwargs={
                         "filepath": os.path.join(
                             os.path.join(dl_file, "mlqa-translate-train"),
-                            "{}_squad-translate-train-dev-v1.1.json".format(lang),
+                            f"{lang}_squad-translate-train-dev-v1.1.json",
                         )
                     },
                 ),
             ]
+
 
         else:
             if self.config.name.startswith("mlqa."):
@@ -150,24 +149,24 @@ class Mlqa(datasets.GeneratorBasedBuilder):
                 return [
                     datasets.SplitGenerator(
                         name=datasets.Split.TEST,
-                        # These kwargs will be passed to _generate_examples
                         gen_kwargs={
                             "filepath": os.path.join(
                                 os.path.join(dl_file, "MLQA_V1/test"),
-                                "test-context-{}-question-{}.json".format(l1, l2),
+                                f"test-context-{l1}-question-{l2}.json",
                             )
                         },
                     ),
                     datasets.SplitGenerator(
                         name=datasets.Split.VALIDATION,
-                        # These kwargs will be passed to _generate_examples
                         gen_kwargs={
                             "filepath": os.path.join(
-                                os.path.join(dl_file, "MLQA_V1/dev"), "dev-context-{}-question-{}.json".format(l1, l2)
+                                os.path.join(dl_file, "MLQA_V1/dev"),
+                                f"dev-context-{l1}-question-{l2}.json",
                             )
                         },
                     ),
                 ]
+
             else:
                 if self.config.name.startswith("mlqa-translate-test"):
                     dl_file = dl_manager.download_and_extract(self.config.data_url)
@@ -175,14 +174,13 @@ class Mlqa(datasets.GeneratorBasedBuilder):
                     return [
                         datasets.SplitGenerator(
                             name=datasets.Split.TEST,
-                            # These kwargs will be passed to _generate_examples
                             gen_kwargs={
                                 "filepath": os.path.join(
                                     os.path.join(dl_file, "mlqa-translate-test"),
-                                    "translate-test-context-{}-question-{}.json".format(lang, lang),
+                                    f"translate-test-context-{lang}-question-{lang}.json",
                                 )
                             },
-                        ),
+                        )
                     ]
 
     def _generate_examples(self, filepath):

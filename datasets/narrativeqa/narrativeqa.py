@@ -132,7 +132,11 @@ class NarrativeQa(datasets.GeneratorBasedBuilder):
                 document_id = row["document_id"]
                 document = documents[document_id]
                 summary = summaries[document_id]
-                full_text = open(os.path.join(full_text_dir, document_id + ".content"), encoding="latin-1").read()
+                full_text = open(
+                    os.path.join(full_text_dir, f"{document_id}.content"),
+                    encoding="latin-1",
+                ).read()
+
                 res = {
                     "document": {
                         "id": document["document_id"],

@@ -56,7 +56,7 @@ class BlimpConfig(datasets.BuilderConfig):
         name = paradigm_uid
 
         description = _DESCRIPTION
-        description += ("This configuration includes the paradigm {}.").format(name)
+        description += f"This configuration includes the paradigm {name}."
 
         super(BlimpConfig, self).__init__(
             name=name, description=description, version=datasets.Version("0.1.0"), **kwargs
@@ -164,7 +164,7 @@ class Blimp(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         cfg = self.config
-        download_urls = {cfg.name: _DOWNLOAD_URL + f"data/{cfg.name}.jsonl"}
+        download_urls = {cfg.name: f"{_DOWNLOAD_URL}data/{cfg.name}.jsonl"}
 
         downloaded_files = dl_manager.download_and_extract(download_urls)
 

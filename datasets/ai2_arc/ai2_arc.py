@@ -97,18 +97,31 @@ class Ai2Arc(datasets.GeneratorBasedBuilder):
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
-                # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, self.config.name, self.config.name + "-Train.jsonl")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir,
+                        self.config.name,
+                        f"{self.config.name}-Train.jsonl",
+                    )
+                },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
-                # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, self.config.name, self.config.name + "-Test.jsonl")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir,
+                        self.config.name,
+                        f"{self.config.name}-Test.jsonl",
+                    )
+                },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
-                # These kwargs will be passed to _generate_examples
-                gen_kwargs={"filepath": os.path.join(data_dir, self.config.name, self.config.name + "-Dev.jsonl")},
+                gen_kwargs={
+                    "filepath": os.path.join(
+                        data_dir, self.config.name, f"{self.config.name}-Dev.jsonl"
+                    )
+                },
             ),
         ]
 

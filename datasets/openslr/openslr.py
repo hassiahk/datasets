@@ -580,7 +580,7 @@ class OpenSlr(datasets.GeneratorBasedBuilder):
             for i, path_to_index in enumerate(path_to_indexs):
                 with open(path_to_index, encoding="utf-8") as f:
                     lines = f.readlines()
-                    for id_, line in enumerate(lines):
+                    for line in lines:
                         field_values = re.split(r"\t\t?", line.strip())
                         filename, user_id, sentence = field_values
                         sentence_index[filename] = sentence
@@ -596,7 +596,7 @@ class OpenSlr(datasets.GeneratorBasedBuilder):
             for i, path_to_index in enumerate(path_to_indexs):
                 with open(path_to_index, encoding="utf-8") as f:
                     lines = f.readlines()
-                    for id_, line in enumerate(lines):
+                    for line in lines:
                         # Following regexs are needed to normalise the lines, since the datasets
                         # are not always consistent and have bugs:
                         line = re.sub(r"\t[^\t]*\t", "\t", line.strip())

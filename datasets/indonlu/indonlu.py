@@ -546,7 +546,7 @@ class Indonlu(datasets.GeneratorBasedBuilder):
                 features["ner_tags"] = datasets.Sequence(datasets.features.ClassLabel(names=self.config.label_classes))
             elif self.config.name in pos_:
                 features["pos_tags"] = datasets.Sequence(datasets.features.ClassLabel(names=self.config.label_classes))
-            elif self.config.name == "casa" or self.config.name == "hoasa":
+            elif self.config.name in ["casa", "hoasa"]:
                 for label in self.config.label_column:
                     features[label] = datasets.features.ClassLabel(names=self.config.label_classes)
             else:
@@ -598,11 +598,11 @@ class Indonlu(datasets.GeneratorBasedBuilder):
                             "passage": ast.literal_eval(passage),
                             "seq_label": ast.literal_eval(seq_label),
                         }
-                    elif self.config.name == "casa" or self.config.name == "hoasa":
+                    elif self.config.name in ["casa", "hoasa"]:
                         sentence, *labels = row
                         sentence = {"sentence": sentence}
                         label = {l: labels[idx] for idx, l in enumerate(self.config.label_column)}
-                        yield id_, {**sentence, **label}
+                        yield (id_, sentence | label)
             elif self.config.name in tsv_file:
                 reader = csv.reader(f, delimiter="\t", quoting=csv.QUOTE_NONE)
 

@@ -1,6 +1,7 @@
 """The IndicGLUE benchmark."""
 
 
+
 import csv
 import json
 import os
@@ -375,20 +376,11 @@ _ACTSA_LANGS = ["te"]
 _MD_LANGS = ["hi"]
 _WIKI_NER_LANGS = ["as", "bn", "gu", "hi", "kn", "ml", "mr", "or", "pa", "ta", "te"]
 
-_NAMES = []
+_NAMES = [f"wnli.{lang}" for lang in _WNLI_LANGS]
 
-for lang in _WNLI_LANGS:
-    _NAMES.append(f"wnli.{lang}")
-
-for lang in _COPA_LANGS:
-    _NAMES.append(f"copa.{lang}")
-
-for lang in _SNA_LANGS:
-    _NAMES.append(f"sna.{lang}")
-
-for lang in _CSQA_LANGS:
-    _NAMES.append(f"csqa.{lang}")
-
+_NAMES.extend(f"copa.{lang}" for lang in _COPA_LANGS)
+_NAMES.extend(f"sna.{lang}" for lang in _SNA_LANGS)
+_NAMES.extend(f"csqa.{lang}" for lang in _CSQA_LANGS)
 for lang in _WSTP_LANGS:
     _NAMES.append(f"wstp.{lang}")
 

@@ -82,16 +82,19 @@ class HebrewThisWorld(datasets.GeneratorBasedBuilder):
                 csv_reader = csv.DictReader(csv_file)
                 for data in csv_reader:
                     id_ = data["issue_num"]
-                    yield id_, {
-                        "issue_num": data["issue_num"],
-                        "page_count": data["page_count"],
-                        "date": data["date"],
-                        "date_he": data["date_he"],
-                        "year": data["year"],
-                        "href": data["href"],
-                        "pdf": data["pdf"],
-                        "coverpage": data["coverpage"],
-                        "backpage": data["backpage"],
-                        "content": data["content"],
-                        "url": data["url"],
-                    }
+                    yield (
+                        id_,
+                        {
+                            "issue_num": id_,
+                            "page_count": data["page_count"],
+                            "date": data["date"],
+                            "date_he": data["date_he"],
+                            "year": data["year"],
+                            "href": data["href"],
+                            "pdf": data["pdf"],
+                            "coverpage": data["coverpage"],
+                            "backpage": data["backpage"],
+                            "content": data["content"],
+                            "url": data["url"],
+                        },
+                    )

@@ -295,9 +295,8 @@ class Mc4(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        data_urls = {}
-        for split in ["train", "validation"]:
-            data_urls[split] = [
+        data_urls = {
+            split: [
                 _DATA_URL.format(
                     language=self.config.name,
                     split_suffix="-validation" if split == "validation" else "",
@@ -307,6 +306,9 @@ class Mc4(datasets.GeneratorBasedBuilder):
                 for lang in self.config.languages
                 for index in range(_N_SHARDS_PER_SPLIT[lang][split])
             ]
+            for split in ["train", "validation"]
+        }
+
         train_downloaded_files = dl_manager.download(data_urls["train"])
         validation_downloaded_files = dl_manager.download(data_urls["validation"])
         return [

@@ -87,10 +87,7 @@ class LcQuad(datasets.GeneratorBasedBuilder):
         with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
             for id_, row in enumerate(data):
-                is_list = False
-                for key in row:
-                    if key != "answer" and isinstance(row[key], list):
-                        is_list = True
+                is_list = any(key != "answer" and isinstance(row[key], list) for key in row)
                 if is_list:
                     continue
                 yield id_, {

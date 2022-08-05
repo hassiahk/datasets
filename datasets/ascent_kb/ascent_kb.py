@@ -139,9 +139,9 @@ class AscentKB(datasets.GeneratorBasedBuilder):
                     data.pop("subject")
                     data.pop("predicate")
                     data.pop("object")
-                    yield id_, data
                 else:  # "open"
                     data.pop("arg1")
                     data.pop("rel")
                     data.pop("arg2")
-                    yield id_, data
+
+                yield id_, data

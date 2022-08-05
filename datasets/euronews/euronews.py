@@ -136,7 +136,7 @@ class Euronews(datasets.GeneratorBasedBuilder):
                 splits = line.split()
                 if len(splits) != 2:
                     continue
-                if line == "" or line == "\n":
+                if line in ["", "\n"]:
                     if tokens:
                         yield guid, {
                             "id": str(guid),

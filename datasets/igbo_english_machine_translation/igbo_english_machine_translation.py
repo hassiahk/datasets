@@ -113,11 +113,10 @@ class IgboEnglishMachineTranslation(datasets.GeneratorBasedBuilder):
             for sentence_counter, (x, y) in enumerate(zip(f1, f2)):
                 x = x.strip()
                 y = y.strip()
-                result = (
+                yield (
                     sentence_counter,
                     {
                         "id": str(sentence_counter),
                         "translation": {"ig": x, "en": y},
                     },
                 )
-                yield result

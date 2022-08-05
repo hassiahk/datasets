@@ -125,11 +125,10 @@ class Cc100(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, datapath):
         with open(datapath, encoding="utf-8") as f:
             for sentence_counter, row in enumerate(f):
-                result = (
+                yield (
                     sentence_counter,
                     {
                         "id": str(sentence_counter),
                         "text": row,
                     },
                 )
-                yield result

@@ -529,7 +529,7 @@ class Lince(datasets.GeneratorBasedBuilder):
 
                 unpacked = list(zip(*pack))
                 if meta:
-                    unpacked = unpacked + meta
+                    unpacked += meta
 
                 row = {feature: unpacked[colnames[feature]] for feature in colnames}
                 row["idx"] = index

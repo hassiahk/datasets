@@ -108,11 +108,7 @@ class Newspop(datasets.GeneratorBasedBuilder):
                     google_plus,
                     linked_in,
                 ) = row
-                if "e" in id:
-                    # 1 number is written as 1e+05
-                    id = int(float(id))
-                else:
-                    id = int(id)
+                id = int(float(id)) if "e" in id else int(id)
                 facebook = int(facebook)
                 google_plus = int(google_plus)
                 linked_in = int(linked_in)

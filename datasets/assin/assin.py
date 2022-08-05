@@ -116,12 +116,12 @@ class Assin(datasets.GeneratorBasedBuilder):
         dev_paths = []
         test_paths = []
 
-        if self.config.name == "full" or self.config.name == "ptpt":
+        if self.config.name in ["full", "ptpt"]:
             train_paths.append(os.path.join(data_dir, "assin-ptpt-train.xml"))
             dev_paths.append(os.path.join(data_dir, "assin-ptpt-dev.xml"))
             test_paths.append(os.path.join(data_dir, "assin-ptpt-test.xml"))
 
-        if self.config.name == "full" or self.config.name == "ptbr":
+        if self.config.name in ["full", "ptbr"]:
             train_paths.append(os.path.join(data_dir, "assin-ptbr-train.xml"))
             dev_paths.append(os.path.join(data_dir, "assin-ptbr-dev.xml"))
             test_paths.append(os.path.join(data_dir, "assin-ptbr-test.xml"))

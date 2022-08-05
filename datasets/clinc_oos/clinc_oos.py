@@ -91,8 +91,7 @@ class ClincOos(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        features = {}
-        features["text"] = datasets.Value("string")
+        features = {"text": datasets.Value("string")}
         labels_list = [
             "restaurant_reviews",
             "nutrition_info",
@@ -267,5 +266,5 @@ class ClincOos(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, split):
         with open(filepath, encoding="utf-8") as f:
             j = json.load(f)
-            for id_, row in enumerate(j[split] + j["oos_" + split]):
+            for id_, row in enumerate(j[split] + j[f"oos_{split}"]):
                 yield id_, {"text": row[0], "intent": row[1]}

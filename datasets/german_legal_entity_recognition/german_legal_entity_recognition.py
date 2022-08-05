@@ -148,7 +148,7 @@ class GermanLegalEntityRecognition(datasets.GeneratorBasedBuilder):
 
                 # if something remains:
                 if current_words:
-                    sentence = (
+                    yield (
                         sentence_counter,
                         {
                             "id": str(sentence_counter),
@@ -156,4 +156,3 @@ class GermanLegalEntityRecognition(datasets.GeneratorBasedBuilder):
                             "ner_tags": current_labels,
                         },
                     )
-                    yield sentence

@@ -168,16 +168,15 @@ class EvidenceInferTreatment(datasets.GeneratorBasedBuilder):
         # Simplify everything
         directory = os.path.join(dl_dir, "txt_files")
         ALL_IDS = {"train": [], "test": [], "validation": []}
-        for prompt_id, item in ALL_PROMPTS.items():
+        for item in ALL_PROMPTS.values():
             pmcid = int(item["Prompt"]["PMCID"])
-            if pmcid not in SPLITS:
-                if os.path.isfile(os.path.join(directory, f"PMC{pmcid}.txt")):
-                    split = "train"
-                else:
-                    continue
-            else:
+            if pmcid in SPLITS:
                 split = SPLITS[pmcid]
 
+            elif os.path.isfile(os.path.join(directory, f"PMC{pmcid}.txt")):
+                split = "train"
+            else:
+                continue
             values = ALL_IDS[split]
 
             filtered = [v for v in values if v["PMCID"] == pmcid]

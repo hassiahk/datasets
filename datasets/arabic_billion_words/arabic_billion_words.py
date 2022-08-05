@@ -15,6 +15,7 @@
 """Arabic Billion Words Corpus"""
 
 
+
 import os
 import re
 
@@ -41,17 +42,18 @@ _HOMEPAGE = "http://abuelkhair.net/index.php/en/arabic/abu-el-khair-corpus"
 
 _URL = "http://abuelkhair.net/corpus/"
 _URLs = {
-    "Alittihad": _URL + "Alittihad_XML_utf_8.rar",
-    "Almasryalyoum": _URL + "Almasryalyoum_XML_utf_8.rar",
-    "Almustaqbal": _URL + "Almustaqbal_XML_utf_8.rar",
-    "Alqabas": _URL + "Alqabas_XML_utf_8.rar",
-    "Echoroukonline": _URL + "Echoroukonline_XML_utf_8.rar",
-    "Ryiadh": _URL + "Ryiadh_XML_utf_8.rar",
-    "Sabanews": _URL + "Sabanews_XML_utf_8.rar",
-    "SaudiYoum": _URL + "SaudiYoum_XML_utf_8.rar",
-    "Techreen": _URL + "Techreen_XML_utf_8.rar",
-    "Youm7": _URL + "Youm7_XML_utf_8.rar",
+    "Alittihad": f"{_URL}Alittihad_XML_utf_8.rar",
+    "Almasryalyoum": f"{_URL}Almasryalyoum_XML_utf_8.rar",
+    "Almustaqbal": f"{_URL}Almustaqbal_XML_utf_8.rar",
+    "Alqabas": f"{_URL}Alqabas_XML_utf_8.rar",
+    "Echoroukonline": f"{_URL}Echoroukonline_XML_utf_8.rar",
+    "Ryiadh": f"{_URL}Ryiadh_XML_utf_8.rar",
+    "Sabanews": f"{_URL}Sabanews_XML_utf_8.rar",
+    "SaudiYoum": f"{_URL}SaudiYoum_XML_utf_8.rar",
+    "Techreen": f"{_URL}Techreen_XML_utf_8.rar",
+    "Youm7": f"{_URL}Youm7_XML_utf_8.rar",
 }
+
 
 # some tags are misspelled
 MISS_SPELLED_TAGS = {
@@ -135,7 +137,7 @@ class ArabicBillionWords(datasets.GeneratorBasedBuilder):
         # check if the tag is misspelled
         for tg in MISS_SPELLED_TAGS[tag]:
             pattern = f"<{tg}>(.*?)</{tg}>"
-            out = re.findall(r"" + pattern, sample.group(0), re.MULTILINE | re.DOTALL)
+            out = re.findall(f"{pattern}", sample.group(0), re.MULTILINE | re.DOTALL)
             if len(out) > 0:
                 break
         return out[0]
@@ -155,7 +157,7 @@ class ArabicBillionWords(datasets.GeneratorBasedBuilder):
                 current_multi_line += line
                 if i % 8 == 0:
                     pattern = f"<{data_tag}(.*?)</{data_tag}>"
-                    data = re.finditer(r"" + pattern, current_multi_line, re.MULTILINE | re.DOTALL)
+                    data = re.finditer(f"{pattern}", current_multi_line, re.MULTILINE | re.DOTALL)
                     text, url, head_line, date = ["", "", "", ""]
                     for record in data:
                         try:

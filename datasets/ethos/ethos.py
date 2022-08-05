@@ -124,36 +124,38 @@ class Ethos(datasets.GeneratorBasedBuilder):
         """Yields examples."""
 
         data = pd.read_csv(filepath, delimiter=";")
+        x = data["comment"].values
         if self.config.variation == "binary":
 
-            x = data["comment"].values
             y = [1 if i >= 0.5 else 0 for i in data["isHate"].values]
             class_names = ["no_hate_speech", "hate_speech"]
             for i in range(len(x)):
                 _id = i
-                yield _id, {"text": x[i], "label": class_names[y[i]]}
+                yield (_id, {"text": x[_id], "label": class_names[y[_id]]})
         else:
-            x = data["comment"].values
             y_temp = data.loc[:, data.columns != "comment"].values
             y = []
             for yt in y_temp:
                 yi = []
                 for i in yt:
                     if i >= 0.5:
-                        yi.append(int(1))
+                        yi.append(1)
                     else:
-                        yi.append(int(0))
+                        yi.append(0)
                 y.append(yi)
             for i in range(len(x)):
                 _id = i
-                yield _id, {
-                    "text": x[i],
-                    "violence": y[i][0],
-                    "directed_vs_generalized": y[i][1],
-                    "gender": y[i][2],
-                    "race": y[i][3],
-                    "national_origin": y[i][4],
-                    "disability": y[i][5],
-                    "religion": y[i][6],
-                    "sexual_orientation": y[i][7],
-                }
+                yield (
+                    _id,
+                    {
+                        "text": x[_id],
+                        "violence": y[_id][0],
+                        "directed_vs_generalized": y[_id][1],
+                        "gender": y[_id][2],
+                        "race": y[_id][3],
+                        "national_origin": y[_id][4],
+                        "disability": y[_id][5],
+                        "religion": y[_id][6],
+                        "sexual_orientation": y[_id][7],
+                    },
+                )

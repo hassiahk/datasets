@@ -114,7 +114,7 @@ class AfrikaansNerCorpus(datasets.GeneratorBasedBuilder):
             tokens = []
             ner_tags = []
             for line in f:
-                if line == "" or line == "\n":
+                if line in ["", "\n"]:
                     if tokens:
                         yield guid, {
                             "id": str(guid),

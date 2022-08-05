@@ -91,8 +91,8 @@ class EmpatheticDialogues(datasets.GeneratorBasedBuilder):
                 speaker_id = int(row["speaker_idx"])
                 context = row["context"]
                 conv_id = row["conv_id"]
-                tags = row["tags"] if row["tags"] else ""
-                selfeval = row["selfeval"] if row["selfeval"] else ""
+                tags = row["tags"] or ""
+                selfeval = row["selfeval"] or ""
                 utterance_id = int(row["utterance_idx"])
                 prompt = row["prompt"]
                 yield id_, {

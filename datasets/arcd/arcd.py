@@ -1,6 +1,7 @@
 """ARCD: Arabic Reading Comprehension Dataset."""
 
 
+
 import json
 
 import datasets
@@ -32,10 +33,7 @@ _DESCRIPTION = """\
 """
 
 _URL = "https://raw.githubusercontent.com/husseinmozannar/SOQAL/master/data/"
-_URLs = {
-    "train": _URL + "arcd-train.json",
-    "dev": _URL + "arcd-test.json",
-}
+_URLs = {"train": f"{_URL}arcd-train.json", "dev": f"{_URL}arcd-test.json"}
 
 
 class ArcdConfig(datasets.BuilderConfig):

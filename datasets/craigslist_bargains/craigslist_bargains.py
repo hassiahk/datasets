@@ -174,11 +174,8 @@ class CraigslistBargains(datasets.GeneratorBasedBuilder):
                 # and fill with default values
                 for item in items:
                     for k in default_items:
-                        if k not in item:
+                        if k not in item or not item[k]:
                             item[k] = default_items[k]
-                        elif not item[k]:
-                            item[k] = default_items[k]
-
                 # Get interaction information.
                 # This is information about messages exchanged
                 # and rules-based dialogue acts assigned to each
@@ -190,18 +187,15 @@ class CraigslistBargains(datasets.GeneratorBasedBuilder):
                 utterances = [u if type(u) == str else "" for u in data]
 
                 metadata = [e.get("metadata") for e in events]
-                metadata = [m if m else default_metadata for m in metadata]
+                metadata = [m or default_metadata for m in metadata]
 
                 # Check for missing keys in metadata, or missing
                 # metadata altogether for test data split.
                 # If anything missing, fill with defaults above.
                 for m in metadata:
                     for k in default_metadata:
-                        if k not in m:
+                        if k not in m or not m[k]:
                             m[k] = default_metadata[k]
-                        elif not m[k]:
-                            m[k] = default_metadata[k]
-
                 yield id_, {
                     "agent_info": agent_info,
                     "agent_turn": agents,

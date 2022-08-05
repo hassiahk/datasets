@@ -112,10 +112,16 @@ class IRCDisentangle(datasets.GeneratorBasedBuilder):
         my_urls = _URL
         dl_dir = dl_manager.download_and_extract(my_urls)
 
-        files = dict()
         if self.config.name == "ubuntu":
-            for split in ["train", "dev", "test"]:
-                files[split] = os.path.join(dl_dir, "jkkummerfeld-irc-disentanglement-fd379e9", "data", split)
+            files = {
+                split: os.path.join(
+                    dl_dir,
+                    "jkkummerfeld-irc-disentanglement-fd379e9",
+                    "data",
+                    split,
+                )
+                for split in ["train", "dev", "test"]
+            }
 
             return [
                 datasets.SplitGenerator(
@@ -240,9 +246,9 @@ class IRCDisentangle(datasets.GeneratorBasedBuilder):
                 if len(line) > 1:
                     annotation_pairs.append((int(line[0]), int(line[1])))
 
-            annotations = dict()
-            for row in range(last_id, last_id + len(raw_sentences)):
-                annotations[row] = set()
+            annotations = {
+                row: set() for row in range(last_id, last_id + len(raw_sentences))
+            }
 
             for (a, b) in annotation_pairs:
                 # required for dummy data creation

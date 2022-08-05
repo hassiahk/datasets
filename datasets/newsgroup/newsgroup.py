@@ -17,6 +17,7 @@
 """20Newsgroup  dataset"""
 
 
+
 import os
 
 import datasets
@@ -74,9 +75,7 @@ _DESC = {
 }
 _CONFIG_NAMES = []
 for version in _VERSIONS:
-    for group in _NEWS_GROUPS:
-        _CONFIG_NAMES.append(version + "_" + group)
-
+    _CONFIG_NAMES.extend(f"{version}_{group}" for group in _NEWS_GROUPS)
 _CONFIG_NAMES = sorted(_CONFIG_NAMES)
 
 

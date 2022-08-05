@@ -108,12 +108,12 @@ class ClickbaitNewsBG(datasets.GeneratorBasedBuilder):
         with open(filepath, "rb") as f:
             data = pd.read_excel(f, engine="openpyxl")
             for id_, row in enumerate(data.itertuples()):
-                row_dict = dict()
+                row_dict = {}
                 for key, value in zip(keys, row[1:]):
-                    if key == "fake_news_score":
-                        row_dict[key] = "legitimate" if value == 1 else "fake"
-                    elif key == "click_bait_score":
+                    if key == "click_bait_score":
                         row_dict[key] = "normal" if value == 1 else "clickbait"
+                    elif key == "fake_news_score":
+                        row_dict[key] = "legitimate" if value == 1 else "fake"
                     else:
                         row_dict[key] = str(value)
                 yield id_, row_dict

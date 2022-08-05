@@ -131,7 +131,7 @@ class ArabicSpeechCorpus(datasets.GeneratorBasedBuilder):
             lab_path = os.path.join(lab_dir, lab_name)
             lab_text = open(lab_path, "r", encoding="utf-8").read()
 
-            wav_name = lab_name[:-4] + ".wav"
+            wav_name = f"{lab_name[:-4]}.wav"
             wav_path = os.path.join(wav_dir, wav_name)
 
             example = {

@@ -15,6 +15,7 @@
 """The COmmonsense Dataset Adversarially-authored by Humans (CODAH)"""
 
 
+
 import csv
 
 import datasets
@@ -39,7 +40,7 @@ Our experimental results show that CODAH questions present a complementary exten
 """
 
 _URL = "https://raw.githubusercontent.com/Websail-NU/CODAH/master/data/"
-_FULL_DATA_URL = _URL + "full_data.tsv"
+_FULL_DATA_URL = f"{_URL}full_data.tsv"
 
 QUESTION_CATEGORIES_MAPPING = {
     "i": "Idioms",
@@ -114,10 +115,11 @@ class Codah(datasets.GeneratorBasedBuilder):
 
         base_url = f"{_URL}cv_split/{self.config.fold}/"
         _urls = {
-            "train": base_url + "train.tsv",
-            "dev": base_url + "dev.tsv",
-            "test": base_url + "test.tsv",
+            "train": f"{base_url}train.tsv",
+            "dev": f"{base_url}dev.tsv",
+            "test": f"{base_url}test.tsv",
         }
+
         downloaded_files = dl_manager.download_and_extract(_urls)
 
         return [

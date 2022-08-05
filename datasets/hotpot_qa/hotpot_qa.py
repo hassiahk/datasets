@@ -107,19 +107,21 @@ class HotpotQA(datasets.GeneratorBasedBuilder):
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         paths = {
-            datasets.Split.TRAIN: _URL_BASE + "hotpot_train_v1.1.json",
-            datasets.Split.VALIDATION: _URL_BASE + "hotpot_dev_" + self.config.name + "_v1.json",
+            datasets.Split.TRAIN: f"{_URL_BASE}hotpot_train_v1.1.json",
+            datasets.Split.VALIDATION: f"{_URL_BASE}hotpot_dev_{self.config.name}_v1.json",
         }
+
         if self.config.name == "fullwiki":
-            paths[datasets.Split.TEST] = _URL_BASE + "hotpot_test_fullwiki_v1.json"
+            paths[datasets.Split.TEST] = f"{_URL_BASE}hotpot_test_fullwiki_v1.json"
 
         files = dl_manager.download(paths)
 
-        split_generators = []
-        for split in files:
-            split_generators.append(datasets.SplitGenerator(name=split, gen_kwargs={"data_file": files[split]}))
-
-        return split_generators
+        return [
+            datasets.SplitGenerator(
+                name=split, gen_kwargs={"data_file": files[split]}
+            )
+            for split in files
+        ]
 
     def _generate_examples(self, data_file):
         """This function returns the examples."""

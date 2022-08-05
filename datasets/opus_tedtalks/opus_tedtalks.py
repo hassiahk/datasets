@@ -102,7 +102,7 @@ class OpusTedtalks(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, datapath):
         l1, l2 = self.config.lang1, self.config.lang2
-        folder = l1 + "-" + l2
+        folder = f"{l1}-{l2}"
         l1_file = _BASE_NAME.format(folder, l1)
         l2_file = _BASE_NAME.format(folder, l2)
         l1_path = os.path.join(datapath, l1_file)
@@ -111,11 +111,10 @@ class OpusTedtalks(datasets.GeneratorBasedBuilder):
             for sentence_counter, (x, y) in enumerate(zip(f1, f2)):
                 x = x.strip()
                 y = y.strip()
-                result = (
+                yield (
                     sentence_counter,
                     {
                         "id": str(sentence_counter),
                         "translation": {l1: x, l2: y},
                     },
                 )
-                yield result

@@ -67,9 +67,23 @@ class AltParallelConfig(datasets.BuilderConfig):
             **kwargs,
         )
 
-        available_langs = set(
-            ["bg", "en", "en_tok", "fil", "hi", "id", "ja", "khm", "lo", "ms", "my", "th", "vi", "zh"]
-        )
+        available_langs = {
+            "bg",
+            "en",
+            "en_tok",
+            "fil",
+            "hi",
+            "id",
+            "ja",
+            "khm",
+            "lo",
+            "ms",
+            "my",
+            "th",
+            "vi",
+            "zh",
+        }
+
         for language in languages:
             assert language in available_langs
 
@@ -184,32 +198,31 @@ class Alt(datasets.GeneratorBasedBuilder):
         else:
             data_path = dl_manager.download_and_extract(_URLs[self.config.name])
 
-        if self.config.name == "alt-my-transliteration" or self.config.name == "alt-my-west-transliteration":
+        if self.config.name in [
+            "alt-my-transliteration",
+            "alt-my-west-transliteration",
+        ]:
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
                     gen_kwargs={"basepath": data_path, "split": None},
                 )
             ]
-        else:
-            data_split = {}
-            for k in _SPLIT:
-                data_split[k] = dl_manager.download_and_extract(_SPLIT[k])
-
-            return [
-                datasets.SplitGenerator(
-                    name=datasets.Split.TRAIN,
-                    gen_kwargs={"basepath": data_path, "split": data_split["train"]},
-                ),
-                datasets.SplitGenerator(
-                    name=datasets.Split.VALIDATION,
-                    gen_kwargs={"basepath": data_path, "split": data_split["dev"]},
-                ),
-                datasets.SplitGenerator(
-                    name=datasets.Split.TEST,
-                    gen_kwargs={"basepath": data_path, "split": data_split["test"]},
-                ),
-            ]
+        data_split = {k: dl_manager.download_and_extract(_SPLIT[k]) for k in _SPLIT}
+        return [
+            datasets.SplitGenerator(
+                name=datasets.Split.TRAIN,
+                gen_kwargs={"basepath": data_path, "split": data_split["train"]},
+            ),
+            datasets.SplitGenerator(
+                name=datasets.Split.VALIDATION,
+                gen_kwargs={"basepath": data_path, "split": data_split["dev"]},
+            ),
+            datasets.SplitGenerator(
+                name=datasets.Split.TEST,
+                gen_kwargs={"basepath": data_path, "split": data_split["test"]},
+            ),
+        ]
 
     def _generate_examples(self, basepath, split=None):
         allow_urls = {}
@@ -227,88 +240,79 @@ class Alt(datasets.GeneratorBasedBuilder):
             data = {}
             for lang in files:
                 file_path = os.path.join(basepath, "ALT-Parallel-Corpus-20191206", f"data_{lang}.txt")
-                fin = open(file_path, encoding="utf-8")
-                for line in fin:
-                    line = line.strip()
-                    sp = line.split("\t")
+                with open(file_path, encoding="utf-8") as fin:
+                    for line in fin:
+                        line = line.strip()
+                        sp = line.split("\t")
 
-                    _, urlid, sntid = sp[0].split(".")
-                    if urlid not in allow_urls:
-                        continue
+                        _, urlid, sntid = sp[0].split(".")
+                        if urlid not in allow_urls:
+                            continue
 
-                    if sntid not in data:
-                        data[sntid] = {}
-                        data[sntid]["SNT.URLID"] = urlid
-                        data[sntid]["SNT.URLID.SNTID"] = sntid
-                        data[sntid]["url"] = allow_urls[urlid]["url"]
-                        data[sntid]["translation"] = {}
+                        if sntid not in data:
+                            data[sntid] = {
+                                "SNT.URLID": urlid,
+                                "SNT.URLID.SNTID": sntid,
+                                "url": allow_urls[urlid]["url"],
+                                "translation": {},
+                            }
 
-                    # Note that Japanese and Myanmar texts have empty sentence fields in this release.
-                    if len(sp) >= 2:
-                        data[sntid]["translation"][lang] = sp[1]
-
-                fin.close()
+                        # Note that Japanese and Myanmar texts have empty sentence fields in this release.
+                        if len(sp) >= 2:
+                            data[sntid]["translation"][lang] = sp[1]
 
         elif self.config.name == "alt-en":
             data = {}
             for fname in ["English-ALT-Draft.txt", "English-ALT-Reviewed.txt"]:
                 file_path = os.path.join(basepath, "English-ALT-20170107", fname)
-                fin = open(file_path, encoding="utf-8")
-                for line in fin:
-                    line = line.strip()
-                    sp = line.split("\t")
+                with open(file_path, encoding="utf-8") as fin:
+                    for line in fin:
+                        line = line.strip()
+                        sp = line.split("\t")
 
-                    _, urlid, sntid = sp[0].split(".")
-                    if urlid not in allow_urls:
-                        continue
+                        _, urlid, sntid = sp[0].split(".")
+                        if urlid not in allow_urls:
+                            continue
 
-                    d = {
-                        "SNT.URLID": urlid,
-                        "SNT.URLID.SNTID": sntid,
-                        "url": allow_urls[urlid]["url"],
-                        "status": None,
-                        "value": None,
-                    }
+                        d = {
+                            "SNT.URLID": urlid,
+                            "SNT.URLID.SNTID": sntid,
+                            "url": allow_urls[urlid]["url"],
+                            "value": sp[1],
+                            "status": "draft"
+                            if fname == "English-ALT-Draft.txt"
+                            else "reviewed",
+                        }
 
-                    d["value"] = sp[1]
-                    if fname == "English-ALT-Draft.txt":
-                        d["status"] = "draft"
-                    else:
-                        d["status"] = "reviewed"
 
-                    data[sntid] = d
-                fin.close()
+                        data[sntid] = d
         elif self.config.name == "alt-jp":
             data = {}
             for fname in ["Japanese-ALT-Draft.txt", "Japanese-ALT-Reviewed.txt"]:
                 file_path = os.path.join(basepath, "Japanese-ALT-20170330", fname)
-                fin = open(file_path, encoding="utf-8")
-                for line in fin:
-                    line = line.strip()
-                    sp = line.split("\t")
-                    _, urlid, sntid = sp[0].split(".")
-                    if urlid not in allow_urls:
-                        continue
+                with open(file_path, encoding="utf-8") as fin:
+                    for line in fin:
+                        line = line.strip()
+                        sp = line.split("\t")
+                        _, urlid, sntid = sp[0].split(".")
+                        if urlid not in allow_urls:
+                            continue
 
-                    d = {
-                        "SNT.URLID": urlid,
-                        "SNT.URLID.SNTID": sntid,
-                        "url": allow_urls[urlid]["url"],
-                        "value": None,
-                        "status": None,
-                        "word_alignment": None,
-                        "en_tokenized": None,
-                        "jp_tokenized": None,
-                    }
+                        d = {
+                            "SNT.URLID": urlid,
+                            "SNT.URLID.SNTID": sntid,
+                            "url": allow_urls[urlid]["url"],
+                            "word_alignment": None,
+                            "en_tokenized": None,
+                            "jp_tokenized": None,
+                            "value": sp[1],
+                            "status": "draft"
+                            if fname == "Japanese-ALT-Draft.txt"
+                            else "reviewed",
+                        }
 
-                    d["value"] = sp[1]
-                    if fname == "Japanese-ALT-Draft.txt":
-                        d["status"] = "draft"
-                    else:
-                        d["status"] = "reviewed"
-                    data[sntid] = d
-                fin.close()
 
+                        data[sntid] = d
             keys = {
                 "word_alignment": "word-alignment/data_ja.en-ja",
                 "en_tokenized": "word-alignment/data_ja.en-tok",
@@ -316,108 +320,87 @@ class Alt(datasets.GeneratorBasedBuilder):
             }
             for k in keys:
                 file_path = os.path.join(basepath, "Japanese-ALT-20170330", keys[k])
-                fin = open(file_path, encoding="utf-8")
-                for line in fin:
-                    line = line.strip()
-                    sp = line.split("\t")
+                with open(file_path, encoding="utf-8") as fin:
+                    for line in fin:
+                        line = line.strip()
+                        sp = line.split("\t")
 
-                    # Note that Japanese and Myanmar texts have empty sentence fields in this release.
-                    if len(sp) < 2:
-                        continue
+                        # Note that Japanese and Myanmar texts have empty sentence fields in this release.
+                        if len(sp) < 2:
+                            continue
 
-                    _, urlid, sntid = sp[0].split(".")
-                    if urlid not in allow_urls:
-                        continue
+                        _, urlid, sntid = sp[0].split(".")
+                        if urlid not in allow_urls:
+                            continue
 
-                    if sntid in data:
+                        if sntid in data:
 
-                        data[sntid][k] = sp[1]
-                fin.close()
-
+                            data[sntid][k] = sp[1]
         elif self.config.name == "alt-my":
             data = {}
             for fname in ["data"]:
                 file_path = os.path.join(basepath, "my-alt-190530", fname)
-                fin = open(file_path, encoding="utf-8")
-                for line in fin:
-                    line = line.strip()
-                    sp = line.split("\t")
-                    _, urlid, sntid = sp[0].split(".")
-                    if urlid not in allow_urls:
-                        continue
+                with open(file_path, encoding="utf-8") as fin:
+                    for line in fin:
+                        line = line.strip()
+                        sp = line.split("\t")
+                        _, urlid, sntid = sp[0].split(".")
+                        if urlid not in allow_urls:
+                            continue
 
-                    data[sntid] = {
-                        "SNT.URLID": urlid,
-                        "SNT.URLID.SNTID": sntid,
-                        "url": allow_urls[urlid]["url"],
-                        "value": sp[1],
-                    }
-                fin.close()
-
-        elif self.config.name == "alt-km":
-            data = {}
-            for fname in ["data_km.km-tag.nova", "data_km.km-tok.nova"]:
-                file_path = os.path.join(basepath, "km-nova-181101", fname)
-                fin = open(file_path, encoding="utf-8")
-                for line in fin:
-                    line = line.strip()
-                    sp = line.split("\t")
-                    _, urlid, sntid = sp[0].split(".")
-                    if urlid not in allow_urls:
-                        continue
-
-                    k = "km_pos_tag" if fname == "data_km.km-tag.nova" else "km_tokenized"
-                    if sntid in data:
-                        data[sntid][k] = sp[1]
-                    else:
                         data[sntid] = {
                             "SNT.URLID": urlid,
                             "SNT.URLID.SNTID": sntid,
                             "url": allow_urls[urlid]["url"],
-                            "km_pos_tag": None,
-                            "km_tokenized": None,
+                            "value": sp[1],
                         }
-                        data[sntid][k] = sp[1]
-                fin.close()
+        elif self.config.name == "alt-km":
+            data = {}
+            for fname in ["data_km.km-tag.nova", "data_km.km-tok.nova"]:
+                file_path = os.path.join(basepath, "km-nova-181101", fname)
+                with open(file_path, encoding="utf-8") as fin:
+                    for line in fin:
+                        line = line.strip()
+                        sp = line.split("\t")
+                        _, urlid, sntid = sp[0].split(".")
+                        if urlid not in allow_urls:
+                            continue
 
+                        k = "km_pos_tag" if fname == "data_km.km-tag.nova" else "km_tokenized"
+                        if sntid not in data:
+                            data[sntid] = {
+                                "SNT.URLID": urlid,
+                                "SNT.URLID.SNTID": sntid,
+                                "url": allow_urls[urlid]["url"],
+                                "km_pos_tag": None,
+                                "km_tokenized": None,
+                            }
+                        data[sntid][k] = sp[1]
         elif self.config.name == "alt-my-transliteration":
             file_path = os.path.join(basepath, "my-en-transliteration", "data.txt")
-            # Need to set errors='ignore' because of the unknown error
-            # UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
-            # It might due to some issues related to Myanmar alphabets
-            fin = open(file_path, encoding="utf-8", errors="ignore")
-            _id = 0
-            for line in fin:
-                line = line.strip()
+            with open(file_path, encoding="utf-8", errors="ignore") as fin:
+                _id = 0
+                for line in fin:
+                    line = line.strip()
 
-                # I don't know why there are \x00 between |||. They don't show in the editor.
-                line = line.replace("\x00", "")
-                sp = line.split("|||")
+                    # I don't know why there are \x00 between |||. They don't show in the editor.
+                    line = line.replace("\x00", "")
+                    sp = line.split("|||")
 
-                # When I read data, it seems to have empty sentence betweem the actual sentence. Don't know why?
-                if len(sp) < 2:
-                    continue
+                    # When I read data, it seems to have empty sentence betweem the actual sentence. Don't know why?
+                    if len(sp) < 2:
+                        continue
 
-                data[_id] = {"en": sp[0].strip(), "my": [sp[1].strip()]}
-                _id += 1
-            fin.close()
+                    data[_id] = {"en": sp[0].strip(), "my": [sp[1].strip()]}
+                    _id += 1
         elif self.config.name == "alt-my-west-transliteration":
             file_path = os.path.join(basepath, "western-myanmar-transliteration", "321.txt")
-            # Need to set errors='ignore' because of the unknown error
-            # UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
-            # It might due to some issues related to Myanmar alphabets
-            fin = open(file_path, encoding="utf-8", errors="ignore")
-            _id = 0
-            for line in fin:
-                line = line.strip()
-                line = line.replace("\x00", "")
-                sp = line.split("|||")
+            with open(file_path, encoding="utf-8", errors="ignore") as fin:
+                for _id, line in enumerate(fin):
+                    line = line.strip()
+                    line = line.replace("\x00", "")
+                    sp = line.split("|||")
 
-                data[_id] = {"en": sp[0].strip(), "my": [k.strip() for k in sp[1].split("|")]}
-                _id += 1
-            fin.close()
-
-        _id = 1
-        for k in data:
-            yield _id, data[k]
-            _id += 1
+                    data[_id] = {"en": sp[0].strip(), "my": [k.strip() for k in sp[1].split("|")]}
+        for _id, (k, v) in enumerate(data.items(), start=1):
+            yield (_id, v)

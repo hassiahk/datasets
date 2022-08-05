@@ -15,6 +15,7 @@
 """An Urdu text corpus for machine learning, natural language processing and linguistic analysis."""
 
 
+
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -41,7 +42,7 @@ _LICENSE = "All files in the /text directory are covered under standard copyrigh
 
 _SHA = "99db56552d6781dcd184bdd3466bce15fd0a1ec0"
 
-_DOWNLOAD_URL = "https://github.com/zeerakahmed/makhzan/archive/" + _SHA + ".zip"
+_DOWNLOAD_URL = f"https://github.com/zeerakahmed/makhzan/archive/{_SHA}.zip"
 
 
 class Makhzan(datasets.GeneratorBasedBuilder):
@@ -84,37 +85,33 @@ class Makhzan(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, data_dir):
         """Yields examples."""
         data_dir_path = Path(data_dir)
-        data_dir_path = data_dir_path / ("makhzan-" + _SHA) / "text"
+        data_dir_path = data_dir_path / f"makhzan-{_SHA}" / "text"
         file_paths = sorted(data_dir_path.glob(r"*.xml"))
         for id_, file_path in enumerate(file_paths):
             with file_path.open(encoding="utf-8") as f:
+                xml = self._fix_format(f.read())
+                root = ET.fromstring(xml)
+                if root.tag != "document":
+                    raise ValueError('Missing tag "<document>"')
                 example = {
-                    "file_id": "",
                     "metadata": "",
                     "title": "",
                     "num-words": 0,
                     "contains-non-urdu-languages": "",
                     "document_body": "",
+                    "file_id": file_path.name,
                 }
-                xml = self._fix_format(f.read())
-                root = ET.fromstring(xml)
-                if root.tag == "document":
-                    example["file_id"] = file_path.name
-                    metadata = root.find("meta")
-                    if metadata:
-                        example["metadata"] = ET.tostring(metadata, encoding="unicode")
-                        example["title"] = metadata.find("title").text
-                        example["num-words"] = int(metadata.find("num-words").text)
-                        example["contains-non-urdu-languages"] = metadata.find("contains-non-urdu-languages").text
-                    else:
-                        raise ValueError('Missing tag "<meta>"')
-                    document_body = root.find("body")
-                    if document_body:
-                        example["document_body"] = ET.tostring(document_body, encoding="unicode")
-                    else:
-                        raise ValueError('Missing tag "<body>"')
+
+                if not (metadata := root.find("meta")):
+                    raise ValueError('Missing tag "<meta>"')
+                example["metadata"] = ET.tostring(metadata, encoding="unicode")
+                example["title"] = metadata.find("title").text
+                example["num-words"] = int(metadata.find("num-words").text)
+                example["contains-non-urdu-languages"] = metadata.find("contains-non-urdu-languages").text
+                if document_body := root.find("body"):
+                    example["document_body"] = ET.tostring(document_body, encoding="unicode")
                 else:
-                    raise ValueError('Missing tag "<document>"')
+                    raise ValueError('Missing tag "<body>"')
                 yield id_, example
 
     def _fix_format(self, xml):

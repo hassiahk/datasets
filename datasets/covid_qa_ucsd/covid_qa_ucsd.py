@@ -128,10 +128,9 @@ class CovidQaUcsd(datasets.GeneratorBasedBuilder):
 
         if not os.path.exists(path_to_manual_file):
             raise FileNotFoundError(
-                "{} does not exist. Make sure the file is present in the directory specified in the data_dir specified in the input {} `datasets.load_dataset('covid_qa_ucsd', 'en', data_dir=...)`. Manual download instructions: {})".format(
-                    path_to_manual_file, dl_manager.manual_dir, self.manual_download_instructions
-                )
+                f"{path_to_manual_file} does not exist. Make sure the file is present in the directory specified in the data_dir specified in the input {dl_manager.manual_dir} `datasets.load_dataset('covid_qa_ucsd', 'en', data_dir=...)`. Manual download instructions: {self.manual_download_instructions})"
             )
+
 
         return [datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={"filepath": path_to_manual_file})]
 
@@ -188,40 +187,37 @@ class CovidQaUcsd(datasets.GeneratorBasedBuilder):
                         line = f_in.readline()
                         if (not line) or (line in ["\n", "\n\r"]):
                             break
-                        else:
-                            if data_lang == "zh":  # Condition in chinese
-                                if line[:5] == "病情描述：":  # Hardcode alert!
-                                    last_user = "病人"
-                                    sen = line[6:].rstrip()
-                                    des_flag = True
-
-                            if data_lang == "en":
-                                last_user = "Patient"
-                                sen = line.rstrip()
-                                des_flag = True
-
-                            if des_flag:
-                                if sen == "":
-                                    continue
-                                if sen in check_list:
-                                    last_conv["speaker"] = ""
-                                    last_conv["utterance"] = ""
-                                else:
-                                    last_conv["speaker"] = last_user
-                                    last_conv["utterance"] = sen
-                                    check_list.append(sen)
-                                des_flag = False
-                                break
-
-                # Extracting the conversation info from dialogue.
-                elif line[:8] == "Dialogue":  # Hardcode alert!
-                    if last_part == "description" and len(last_conv["utterance"]) > 0:
-                        last_part = "dialogue"
-                        if data_lang == "zh":
+                        if data_lang == "zh" and line[:5] == "病情描述：":
                             last_user = "病人"
+                            sen = line[6:].rstrip()
+                            des_flag = True
 
                         if data_lang == "en":
                             last_user = "Patient"
+                            sen = line.rstrip()
+                            des_flag = True
+
+                        if des_flag:
+                            if sen == "":
+                                continue
+                            if sen in check_list:
+                                last_conv["speaker"] = ""
+                                last_conv["utterance"] = ""
+                            else:
+                                last_conv["speaker"] = last_user
+                                last_conv["utterance"] = sen
+                                check_list.append(sen)
+                            des_flag = False
+                            break
+
+                elif line[:8] == "Dialogue":  # Hardcode alert!
+                    if last_part == "description" and len(last_conv["utterance"]) > 0:
+                        last_part = "dialogue"
+                        if data_lang == "en":
+                            last_user = "Patient"
+
+                        elif data_lang == "zh":
+                            last_user = "病人"
 
                         while True:
                             line = f_in.readline()
@@ -232,8 +228,8 @@ class CovidQaUcsd(datasets.GeneratorBasedBuilder):
                                 # To ensure close of conversation, only even number of sentences
                                 # are extracted
                                 last_turn = len(last_list)
-                                if int(last_turn / 2) > 0:
-                                    temp = int(last_turn / 2)
+                                if last_turn // 2 > 0:
+                                    temp = last_turn // 2
                                     id_ += 1
                                     last_dialog["dialogue_id"] = dialogue_id
                                     last_dialog["dialogue_url"] = dialogue_url
@@ -241,16 +237,15 @@ class CovidQaUcsd(datasets.GeneratorBasedBuilder):
                                     yield id_, last_dialog
                                 break
 
-                            if data_lang == "zh":
-                                if line[:3] == "病人：" or line[:3] == "医生：":  # Hardcode alert!
-                                    user = line[:2]  # Hardcode alert!
-                                    line = f_in.readline()
-                                    conv_flag = True
+                            if data_lang == "zh" and line[:3] in ["病人：", "医生："]:
+                                user = line[:2]  # Hardcode alert!
+                                line = f_in.readline()
+                                conv_flag = True
 
                             # The elif block is to ensure that multi-line sentences are captured.
                             # This has been observed only in english.
                             if data_lang == "en":
-                                if line.strip() == "Patient:" or line.strip() == "Doctor:":  # Hardcode alert!
+                                if line.strip() in ["Patient:", "Doctor:"]:  # Hardcode alert!
                                     user = line.replace(":", "").rstrip()
                                     line = f_in.readline()
                                     conv_flag = True

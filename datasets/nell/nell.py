@@ -205,7 +205,7 @@ class Nell(datasets.GeneratorBasedBuilder):
                                             url = arr[i + 1].split(",")[0]
                                 if iter_type == "CPL":
                                     if "_" in sentence:
-                                        sentence = sentence.replace("_", "[[ " + best_arg1 + " ]]")
+                                        sentence = sentence.replace("_", f"[[ {best_arg1} ]]")
                                     elif "arg1" in sentence:
                                         sentence = sentence.replace("arg1", "[[ " + best_arg1 + " ]]").replace(
                                             "arg2", "[[ " + best_arg2 + " ]]"
@@ -217,14 +217,27 @@ class Nell(datasets.GeneratorBasedBuilder):
                                 if sentence.endswith("OE"):
                                     sentence = sentence[:-4]
                                 id_ += 1
-                                yield id_, {
-                                    "entity": row[0].replace("candidate:", "").replace("concept:", "").strip(),
-                                    "relation": row[1].replace("candidate:", "").replace("concept:", "").strip(),
-                                    "value": row[2].replace("candidate:", "").replace("concept:", "").strip(),
-                                    "score": row[4].strip(),
-                                    "sentence": sentence.strip(),
-                                    "count": int(count),
-                                    "url": url.strip(),
-                                    "sentence_type": iter_type,
-                                }
+                                yield (
+                                    id_,
+                                    {
+                                        "entity": row[0]
+                                        .replace("candidate:", "")
+                                        .replace("concept:", "")
+                                        .strip(),
+                                        "relation": row[1]
+                                        .replace("candidate:", "")
+                                        .replace("concept:", "")
+                                        .strip(),
+                                        "value": row[2]
+                                        .replace("candidate:", "")
+                                        .replace("concept:", "")
+                                        .strip(),
+                                        "score": row[4].strip(),
+                                        "sentence": sentence.strip(),
+                                        "count": count,
+                                        "url": url.strip(),
+                                        "sentence_type": iter_type,
+                                    },
+                                )
+
                         iter_type = s2.split(",")[-1].strip("+")

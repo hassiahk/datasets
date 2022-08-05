@@ -59,7 +59,7 @@ def get_train_test_dev_files(files, test_split, train_split, dev_split):
         elif filename in dev_split:
             dev_files.append(file)
         else:
-            logger.info("skipped file {}".format(file))
+            logger.info(f"skipped file {file}")
     return test_files, train_files, dev_files
 
 
@@ -139,15 +139,18 @@ class CRD3(datasets.GeneratorBasedBuilder):
                         turn_names = turn["NAMES"]
                         turn_utterances = turn["UTTERANCES"]
                         turn_num = turn["NUMBER"]
-                        yield str(id0) + "_" + str(id1) + "_" + str(id2), {
-                            "chunk": chunk,
-                            "chunk_id": chunk_id,
-                            "turn_start": turn_start,
-                            "turn_end": turn_end,
-                            "alignment_score": score,
-                            "turn_num": turn_num,
-                            "turns": {
-                                "names": turn_names,
-                                "utterances": turn_utterances,
+                        yield (
+                            f"{str(id0)}_{str(id1)}_{str(id2)}",
+                            {
+                                "chunk": chunk,
+                                "chunk_id": chunk_id,
+                                "turn_start": turn_start,
+                                "turn_end": turn_end,
+                                "alignment_score": score,
+                                "turn_num": turn_num,
+                                "turns": {
+                                    "names": turn_names,
+                                    "utterances": turn_utterances,
+                                },
                             },
-                        }
+                        )

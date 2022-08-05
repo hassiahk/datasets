@@ -284,7 +284,7 @@ class OscarConfig(datasets.BuilderConfig):
         """
         # Validate the language.
         if language not in _languages():
-            raise ValueError("Invalid language: %s " % language)
+            raise ValueError(f"Invalid language: {language} ")
 
         shuffled_str = "shuffled" if shuffled else "unshuffled"
         deduplicated_str = "deduplicated" if deduplicated else "original"
@@ -360,13 +360,11 @@ class Oscar(datasets.GeneratorBasedBuilder):
                     if len(line.strip()) > 0:
                         current_lines.append(line)
                     elif current_lines:
-                        feature = id_, {"id": id_, "text": "".join(current_lines).rstrip()}
-                        yield feature
+                        yield id_, {"id": id_, "text": "".join(current_lines).rstrip()}
                         id_ += 1
                         current_lines = []
                 # last paragraph
                 if current_lines:
-                    feature = id_, {"id": id_, "text": "".join(current_lines).rstrip()}
-                    yield feature
+                    yield id_, {"id": id_, "text": "".join(current_lines).rstrip()}
                     id_ += 1
                     current_lines = []

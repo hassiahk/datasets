@@ -115,12 +115,9 @@ class Covost2(datasets.GeneratorBasedBuilder):
 
         if not os.path.exists(source_path):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via "
-                "`datasets.load_dataset('covost2', data_dir=...)` that includes files uncompressed files from the "
-                "COVOST2 archive. Manual download instructions: {}".format(
-                    data_root, self.manual_download_instructions
-                )
+                f"{data_root} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('covost2', data_dir=...)` that includes files uncompressed files from the COVOST2 archive. Manual download instructions: {self.manual_download_instructions}"
             )
+
 
         covost_url = COVOST_URL_TEMPLATE.format(src_lang=source_lang, tgt_lang=target_lang)
         extracted_path = dl_manager.download_and_extract(covost_url)

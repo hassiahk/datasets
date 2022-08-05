@@ -17,6 +17,7 @@
 """MeDAL: Medical Abbreviation Disambiguation Dataset for Natural Language Understanding Pretraining"""
 
 
+
 import csv
 
 import datasets
@@ -47,10 +48,10 @@ A large medical text dataset (14Go) curated to 4Go for abbreviation disambiguati
 
 _URL = "https://zenodo.org/record/4276178/files/"
 _URLS = {
-    "train": _URL + "train.csv",
-    "test": _URL + "test.csv",
-    "valid": _URL + "valid.csv",
-    "full": _URL + "full_data.csv",
+    "train": f"{_URL}train.csv",
+    "test": f"{_URL}test.csv",
+    "valid": f"{_URL}valid.csv",
+    "full": f"{_URL}full_data.csv",
 }
 
 

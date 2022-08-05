@@ -103,13 +103,8 @@ class MWSC(datasets.GeneratorBasedBuilder):
                 else:
                     schema.append(line.strip())
 
-        # Train/test/dev split from decaNLP code
-        splits = {}
         traindev = schemas[:-50]
-        splits["test"] = schemas[-50:]
-        splits["train"] = traindev[:40]
-        splits["dev"] = traindev[40:]
-
+        splits = {"test": schemas[-50:], "train": traindev[:40], "dev": traindev[40:]}
         idx = 0
         for schema in splits[split]:
             sentence, question, answers = schema

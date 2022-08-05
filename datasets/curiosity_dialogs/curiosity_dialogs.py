@@ -15,6 +15,7 @@
 """Information Seeking in the Spirit of Learning: a Dataset for Conversational Curiosity"""
 
 
+
 import json
 import os
 
@@ -43,10 +44,10 @@ _LICENSE = "https://github.com/facebookresearch/curiosity/blob/master/LICENSE"
 
 _URL = "https://obj.umiacs.umd.edu/curiosity/"
 _URLs = {
-    "train": _URL + "curiosity_dialogs.train.json",
-    "val": _URL + "curiosity_dialogs.val.json",
-    "test": _URL + "curiosity_dialogs.test.json",
-    "test_zero": _URL + "curiosity_dialogs.test_zero.json",
+    "train": f"{_URL}curiosity_dialogs.train.json",
+    "val": f"{_URL}curiosity_dialogs.val.json",
+    "test": f"{_URL}curiosity_dialogs.test.json",
+    "test_zero": f"{_URL}curiosity_dialogs.test_zero.json",
 }
 
 

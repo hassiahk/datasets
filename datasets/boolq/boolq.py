@@ -1,6 +1,7 @@
 """TODO(boolq): Add a description here."""
 
 
+
 import json
 
 import datasets
@@ -25,10 +26,7 @@ The text-pair classification setup is similar to existing natural language infer
 """
 
 _URL = "https://storage.googleapis.com/boolq/"
-_URLS = {
-    "train": _URL + "train.jsonl",
-    "dev": _URL + "dev.jsonl",
-}
+_URLS = {"train": f"{_URL}train.jsonl", "dev": f"{_URL}dev.jsonl"}
 
 
 class Boolq(datasets.GeneratorBasedBuilder):

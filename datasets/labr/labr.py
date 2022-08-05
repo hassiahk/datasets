@@ -17,6 +17,7 @@
 """Arabic Book Reviews."""
 
 
+
 import csv
 
 import datasets
@@ -42,9 +43,9 @@ _CITATION = """\
 
 _URL = "https://raw.githubusercontent.com/mohamedadaly/LABR/master/data/"
 _URLS = {
-    "train": _URL + "5class-balanced-train.txt",
-    "test": _URL + "5class-balanced-test.txt",
-    "reviews": _URL + "reviews.tsv",
+    "train": f"{_URL}5class-balanced-train.txt",
+    "test": f"{_URL}5class-balanced-test.txt",
+    "reviews": f"{_URL}reviews.tsv",
 }
 
 
@@ -107,9 +108,7 @@ class Labr(datasets.GeneratorBasedBuilder):
         reviews = []
         with open(self.reviews_path, encoding="utf-8") as tsvfile:
             tsvreader = csv.reader(tsvfile, delimiter="\t")
-            for line in tsvreader:
-                reviews.append(line)
-
+            reviews.extend(iter(tsvreader))
         with open(directory, encoding="utf-8") as f:
             for id_, record in enumerate(f.read().splitlines()):
                 rating, _, _, _, review_text = reviews[int(record)]

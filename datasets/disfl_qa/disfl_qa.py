@@ -109,27 +109,28 @@ class DisflQA(datasets.GeneratorBasedBuilder):
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": dl_manager.download_and_extract(_URL + "train.json"),
+                    "filepath": dl_manager.download_and_extract(
+                        f"{_URL}train.json"
+                    ),
                     "split": "train",
                     "squad_v2_data": squad_v2_downloaded_files,
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": dl_manager.download_and_extract(_URL + "test.json"),
+                    "filepath": dl_manager.download_and_extract(
+                        f"{_URL}test.json"
+                    ),
                     "split": "test",
                     "squad_v2_data": squad_v2_downloaded_files,
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
-                # These kwargs will be passed to _generate_examples
                 gen_kwargs={
-                    "filepath": dl_manager.download_and_extract(_URL + "dev.json"),
+                    "filepath": dl_manager.download_and_extract(f"{_URL}dev.json"),
                     "split": "dev",
                     "squad_v2_data": squad_v2_downloaded_files,
                 },
@@ -148,13 +149,13 @@ class DisflQA(datasets.GeneratorBasedBuilder):
 
         for file in squad_v2_data:
             with open(squad_v2_data[file], encoding="utf-8") as f:
-                merge_squad_v2_json.update(json.load(f))
+                merge_squad_v2_json |= json.load(f)
 
         squad_v2_dict = _helper_dict(merge_squad_v2_json)  # contains all squad_v2 data in a dict with id as key
 
         with open(filepath, encoding="utf-8") as f:
             glob_id = 0
-            for id_, row in enumerate(f):
+            for row in f:
                 data = json.loads(row)
                 for i in data:
                     yield glob_id, {

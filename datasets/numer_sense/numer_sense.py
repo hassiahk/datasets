@@ -59,9 +59,9 @@ class NumerSense(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        train_url = _BASE_DOWNLOAD_URL + "train.masked.tsv"
-        test_core_url = _BASE_DOWNLOAD_URL + "test.core.masked.txt"
-        test_all_url = _BASE_DOWNLOAD_URL + "test.all.masked.txt"
+        train_url = f"{_BASE_DOWNLOAD_URL}train.masked.tsv"
+        test_core_url = f"{_BASE_DOWNLOAD_URL}test.core.masked.txt"
+        test_all_url = f"{_BASE_DOWNLOAD_URL}test.all.masked.txt"
 
         train_path = dl_manager.download_and_extract(train_url)
         test_core_path = dl_manager.download_and_extract(test_core_url)
@@ -80,5 +80,4 @@ class NumerSense(datasets.GeneratorBasedBuilder):
                     yield i, {"sentence": sentence.rstrip(), "target": ""}
             else:
                 reader = csv.DictReader(f, delimiter="\t", fieldnames=["sentence", "target"])
-                for i, row in enumerate(reader):
-                    yield i, row
+                yield from enumerate(reader)

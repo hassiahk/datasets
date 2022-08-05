@@ -1,6 +1,7 @@
 """TODO(fquad): Add a description here."""
 
 
+
 import json
 import os
 
@@ -34,10 +35,7 @@ Finetuning CamemBERT on FQuAD yields a F1 score of 88% and an exact match of 77.
 """
 
 _URL = "https://storage.googleapis.com/illuin/fquad/"
-_URLS = {
-    "train": _URL + "train.json.zip",
-    "valid": _URL + "valid.json.zip",
-}
+_URLS = {"train": f"{_URL}train.json.zip", "valid": f"{_URL}valid.json.zip"}
 
 
 class Fquad(datasets.GeneratorBasedBuilder):
@@ -104,8 +102,14 @@ class Fquad(datasets.GeneratorBasedBuilder):
                     texts = [answer[0]["text"] for answer in answers]
                     answers_starts = [answer[0]["answer_start"] for answer in answers]
 
-                    yield str(id1) + "_" + str(id2), {
-                        "context": example["context"],
-                        "questions": questions,
-                        "answers": {"texts": texts, "answers_starts": answers_starts},
-                    }
+                    yield (
+                        f"{str(id1)}_{str(id2)}",
+                        {
+                            "context": example["context"],
+                            "questions": questions,
+                            "answers": {
+                                "texts": texts,
+                                "answers_starts": answers_starts,
+                            },
+                        },
+                    )

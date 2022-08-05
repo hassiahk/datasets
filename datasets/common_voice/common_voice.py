@@ -723,4 +723,4 @@ class CommonVoice(datasets.GeneratorBasedBuilder):
                 if len(field_values) < len(data_fields):
                     field_values += (len(data_fields) - len(field_values)) * ["''"]
 
-                yield id_, {key: value for key, value in zip(data_fields, field_values)}
+                yield (id_, dict(zip(data_fields, field_values)))

@@ -111,11 +111,11 @@ class DatacommonsFactcheck(datasets.GeneratorBasedBuilder):
                     "claim_author_name": data["itemReviewed"]["author"].get("name", ""),
                     "claim_date": data["itemReviewed"].get("datePublished", ""),
                 }
-                if self.config.name == "weekly_standard":
-                    if data["author"]["name"] == "The Weekly Standard":
-                        id_ += 1
-                        yield id_, res
-                else:
-                    if data["author"]["name"] != "The Weekly Standard":
-                        id_ += 1
-                        yield id_, res
+                if (
+                    self.config.name == "weekly_standard"
+                    and data["author"]["name"] == "The Weekly Standard"
+                    or self.config.name != "weekly_standard"
+                    and data["author"]["name"] != "The Weekly Standard"
+                ):
+                    id_ += 1
+                    yield id_, res

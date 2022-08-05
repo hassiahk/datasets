@@ -231,7 +231,7 @@ class Dane(datasets.GeneratorBasedBuilder):
                         sent_id = val
                     elif var == "text":
                         text = val
-                elif line == "" or line == "\n":
+                elif line in ["", "\n"]:
                     if tokens:
                         yield guid, {
                             "sent_id": sent_id,

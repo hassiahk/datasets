@@ -17,6 +17,7 @@
 """Librispeech automatic speech recognition dataset."""
 
 
+
 import glob
 import os
 
@@ -62,15 +63,15 @@ _DL_URL = "http://www.openslr.org/resources/12/"
 
 _DL_URLS = {
     "clean": {
-        "dev": _DL_URL + "dev-clean.tar.gz",
-        "test": _DL_URL + "test-clean.tar.gz",
-        "train.100": _DL_URL + "train-clean-100.tar.gz",
-        "train.360": _DL_URL + "train-clean-360.tar.gz",
+        "dev": f"{_DL_URL}dev-clean.tar.gz",
+        "test": f"{_DL_URL}test-clean.tar.gz",
+        "train.100": f"{_DL_URL}train-clean-100.tar.gz",
+        "train.360": f"{_DL_URL}train-clean-360.tar.gz",
     },
     "other": {
-        "test": _DL_URL + "test-other.tar.gz",
-        "dev": _DL_URL + "dev-other.tar.gz",
-        "train.500": _DL_URL + "train-other-500.tar.gz",
+        "test": f"{_DL_URL}test-other.tar.gz",
+        "dev": f"{_DL_URL}dev-other.tar.gz",
+        "train.500": f"{_DL_URL}train-other-500.tar.gz",
     },
 }
 

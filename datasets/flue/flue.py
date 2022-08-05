@@ -200,7 +200,7 @@ class Flue(datasets.GeneratorBasedBuilder):
     ]
 
     def _info(self):
-        if self.config.name == "CLS" or self.config.name == "XNLI":
+        if self.config.name in ["CLS", "XNLI"]:
             features = {text_feature: datasets.Value("string") for text_feature in self.config.text_features.keys()}
             features[self.config.label_column] = datasets.features.ClassLabel(names=self.config.label_classes)
             features["idx"] = datasets.Value("int32")
@@ -378,7 +378,7 @@ class Flue(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, data_file, split):
         if self.config.name == "CLS":
             for category in ["books", "dvd", "music"]:
-                file_path = os.path.join(data_file, category, split + ".review")
+                file_path = os.path.join(data_file, category, f"{split}.review")
                 with open(file_path, "rt", encoding="utf-8") as f:
                     next(f)
                     id = 0
@@ -416,15 +416,14 @@ class Flue(datasets.GeneratorBasedBuilder):
                             "hypo": self._cleaner(row[1]),
                             "label": row[2].strip().replace("contradictory", "contradiction"),
                         }
-                    else:
-                        if row[0] == "fr":
-                            id += 1
-                            yield id_, {
-                                "idx": id,
-                                "premise": self._cleaner(row[6]),
-                                "hypo": self._cleaner(row[7]),
-                                "label": row[1].strip(),  # the label is already "contradiction" in the dev/test
-                            }
+                    elif row[0] == "fr":
+                        id += 1
+                        yield id_, {
+                            "idx": id,
+                            "premise": self._cleaner(row[6]),
+                            "hypo": self._cleaner(row[7]),
+                            "label": row[1].strip(),  # the label is already "contradiction" in the dev/test
+                        }
         elif self.config.name == "WSD-V":
             wsd_rdr = WSDDatasetReader()
             for inst in wsd_rdr.read_from_data_dirs([os.path.join(data_file, split)]):
@@ -444,7 +443,7 @@ class Flue(datasets.GeneratorBasedBuilder):
         from: https://github.com/getalp/Flaubert/blob/master/flue/extract_split_cls.py
         """
         m = re.search(r"(?<=<rating>)\d+.\d+(?=<\/rating>)", line)
-        label = "positive" if int(float(m.group(0))) > 3 else "negative"  # rating == 3 are already removed
+        label = "positive" if int(float(m[0])) > 3 else "negative"
         category = re.search(r"(?<=<category>)\w+(?=<\/category>)", line)
 
         if category == "dvd":
@@ -452,7 +451,7 @@ class Flue(datasets.GeneratorBasedBuilder):
         else:
             m = re.search(r"(?<=\/url><text>)(.|\n|\t|\f)+(?=\<\/text><title>)", line)
 
-        review_text = m.group(0)
+        review_text = m[0]
 
         return self._cleaner(review_text), label
 
@@ -500,11 +499,7 @@ class Flue(datasets.GeneratorBasedBuilder):
         paths = {}
 
         for f in os.listdir(dirpath):
-            if f.startswith("FSE"):
-                data = "test"
-            else:
-                data = "train"
-
+            data = "test" if f.startswith("FSE") else "train"
             paths["_".join((data, f))] = os.path.join(dirpath, f)
 
         test_dirpath = os.path.join(dirpath, "test")
@@ -571,10 +566,8 @@ class WSDDatasetReader:
                     fine_pos_tags = []
                     disambiguate_tokens_ids = []
                     disambiguate_labels = []
-                    tok_idx = 0
-
                     # iterate over tokens
-                    for tok in sentence:
+                    for tok_idx, tok in enumerate(sentence):
                         lemma, pos, fine_pos_tag = tok.get("lemma"), tok.get("pos"), tok.get("fine_pos")
 
                         pos_tags.append(pos)
@@ -591,17 +584,14 @@ class WSDDatasetReader:
                             target_first_label = target_labels[0]
 
                             # We focus on the head of the target mwe instance
-                            if pos == "VERB":
-                                tgt_idx = tok_idx  # head is mostly the first token as most mwe verb targets are phrasal verbs (i.g lift up)
-                            else:
-                                tgt_idx = (
-                                    tok_idx + len(subtokens) - 1
-                                )  # other pos head are generally the last token of the mwe (i.g European Union)
+                            tgt_idx = (
+                                tok_idx
+                                if pos == "VERB"
+                                else (tok_idx + len(subtokens) - 1)
+                            )
 
                             disambiguate_tokens_ids.append(tgt_idx)
                             disambiguate_labels.append(target_first_label)
-
-                        tok_idx += 1
 
                     yield (
                         sent_id,
@@ -628,11 +618,11 @@ class WSDDatasetReader:
 
         for text in corpus:
             for sentence in text:
-                if keep_mwe:
-                    sent = [tok.text.replace(" ", "_") for tok in sentence]
-                else:
-                    sent = [subtok for tok in sentence for subtok in tok.text.split(" ")]
-                yield sent
+                yield [
+                    tok.text.replace(" ", "_") for tok in sentence
+                ] if keep_mwe else [
+                    subtok for tok in sentence for subtok in tok.text.split(" ")
+                ]
 
     def read_target_keys(self, infile):
         """Read target keys"""

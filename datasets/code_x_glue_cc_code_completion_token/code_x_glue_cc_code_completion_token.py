@@ -57,11 +57,7 @@ class CodeXGlueCcCodeCompletionTokenJavaImpl(CodeXGlueCcCodeCompletionTokenImpl)
     def _generate_examples(self, split_name, file_paths):
         with open(file_paths["data"], encoding="utf-8") as f:
             for idx, line in enumerate(f):
-                new_data = []
-                for token in line.strip().split():
-                    if len(token) > 100:
-                        continue
-                    new_data.append(token)
+                new_data = [token for token in line.strip().split() if len(token) <= 100]
                 entry = dict(id=idx, code=new_data)
                 yield idx, entry
 
@@ -95,7 +91,7 @@ class CodeXGlueCcCodeCompletionTokenPythonImpl(CodeXGlueCcCodeCompletionTokenImp
         qualifier_regex = r"^[a-z]+"
         qualifier_match = re.search(qualifier_regex, token)
         # string qualifiers like 'r' for regex, 'f' for formatted string, 'b' for bytes, 'u' for unicode, etc (or combination of them)
-        qualifier = "" if not qualifier_match else qualifier_match[0]
+        qualifier = qualifier_match[0] if qualifier_match else ""
         # token string without qualifiers
         token_string = re.sub(qualifier_regex, "", token)
         # string literal without quotes
@@ -128,7 +124,7 @@ class CodeXGlueCcCodeCompletionTokenPythonImpl(CodeXGlueCcCodeCompletionTokenImp
         from tokenize import COMMENT, ENCODING, ENDMARKER, INDENT, NEWLINE, NL, NUMBER, STRING, tokenize
 
         file_paths = open(os.path.join(base_dir, file_name), encoding="utf-8").readlines()
-        for ct, path in enumerate(file_paths):
+        for path in file_paths:
             try:
                 code = open(os.path.join(base_dir, path.strip()), encoding="utf-8").read()
                 token_gen = tokenize(BytesIO(bytes(code, "utf8")).readline)
@@ -151,7 +147,10 @@ class CodeXGlueCcCodeCompletionTokenPythonImpl(CodeXGlueCcCodeCompletionTokenImp
                         if not prev_eol:
                             out_tokens.append("<EOL>")
                             prev_eol = True
-                    elif toknum in [COMMENT, INDENT, ENCODING, ENDMARKER] or len(tokval) == 0:
+                    elif (
+                        toknum in [COMMENT, INDENT, ENCODING, ENDMARKER]
+                        or not tokval
+                    ):
                         continue
                     else:
                         out_tokens.append(tokval)
@@ -179,12 +178,10 @@ class CodeXGlueCcCodeCompletionTokenPythonImpl(CodeXGlueCcCodeCompletionTokenImp
                 t = tarfile.TarFile(fileobj=gzip_file)
                 t.extractall(path=base_dir)
 
-        idx = 0
-        for entry in self.py_tokenize(base_dir=base_dir, file_name=filename):
+        for idx, entry in enumerate(self.py_tokenize(base_dir=base_dir, file_name=filename)):
             path, out_tokens = entry
             path = path[len("data/") :]
             yield idx, dict(id=idx, path=path, code=out_tokens)
-            idx += 1
 
 
 CLASS_MAPPING = {
@@ -206,8 +203,7 @@ class CodeXGlueCcCodeCompletionToken(datasets.GeneratorBasedBuilder):
             self.child = CLASS_MAPPING[info["class_name"]](info)
         else:
             raise RuntimeError(f"Unknown python class for dataset configuration {name}")
-        ret = self.child._info()
-        return ret
+        return self.child._info()
 
     def _split_generators(self, dl_manager: datasets.DownloadManager) -> List[datasets.SplitGenerator]:
         return self.child._split_generators(dl_manager=dl_manager)

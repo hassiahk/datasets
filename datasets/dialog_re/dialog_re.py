@@ -16,6 +16,7 @@
 """DialogRE: the first human-annotated dialogue-based relation extraction dataset"""
 
 
+
 import json
 import os
 
@@ -45,9 +46,9 @@ _LICENSE = "https://github.com/nlpdata/dialogre/blob/master/license.txt"
 
 _URL = "https://raw.githubusercontent.com/nlpdata/dialogre/master/data_v2/en/data/"
 _URLs = {
-    "train": _URL + "train.json",
-    "dev": _URL + "dev.json",
-    "test": _URL + "test.json",
+    "train": f"{_URL}train.json",
+    "dev": f"{_URL}dev.json",
+    "test": f"{_URL}test.json",
 }
 
 

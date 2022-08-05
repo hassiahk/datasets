@@ -90,14 +90,14 @@ class Muchocine(datasets.GeneratorBasedBuilder):
                 if len(review_bod) > 0:
                     for node in review_bod[0].childNodes:
                         if node.nodeType == node.TEXT_NODE:
-                            btxt += node.data + " "
+                            btxt += f"{node.data} "
 
                 rtxt = ""
                 review_summ = doc.getElementsByTagName("summary")
                 if len(review_summ) > 0:
                     for node in review_summ[0].childNodes:
                         if node.nodeType == node.TEXT_NODE:
-                            rtxt += node.data + " "
+                            rtxt += f"{node.data} "
 
                 yield id, {
                     "review_body": btxt,

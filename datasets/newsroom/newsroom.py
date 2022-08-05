@@ -96,8 +96,11 @@ class Newsroom(datasets.GeneratorBasedBuilder):
   """
 
     def _info(self):
-        features = {k: datasets.Value("string") for k in [_DOCUMENT, _SUMMARY] + _ADDITIONAL_TEXT_FEATURES}
-        features.update({k: datasets.Value("float32") for k in _ADDITIONAL_FLOAT_FEATURES})
+        features = {
+            k: datasets.Value("string")
+            for k in [_DOCUMENT, _SUMMARY] + _ADDITIONAL_TEXT_FEATURES
+        } | {k: datasets.Value("float32") for k in _ADDITIONAL_FLOAT_FEATURES}
+
         return datasets.DatasetInfo(
             description=_DESCRIPTION,
             features=datasets.Features(features),
@@ -111,10 +114,9 @@ class Newsroom(datasets.GeneratorBasedBuilder):
         data_dir = os.path.abspath(os.path.expanduser(dl_manager.manual_dir))
         if not os.path.exists(data_dir):
             raise FileNotFoundError(
-                "{} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('newsroom', data_dir=...)` that includes files unzipped from the reclor zip. Manual download instructions: {}".format(
-                    data_dir, self.manual_download_instructions
-                )
+                f"{data_dir} does not exist. Make sure you insert a manual dir via `datasets.load_dataset('newsroom', data_dir=...)` that includes files unzipped from the reclor zip. Manual download instructions: {self.manual_download_instructions}"
             )
+
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,

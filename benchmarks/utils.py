@@ -23,14 +23,16 @@ def generate_examples(features: dict, num_examples=100, seq_shapes=None):
     seq_shapes = seq_shapes or {}
     for i in range(num_examples):
         example = {}
-        for col_id, (k, v) in enumerate(features.items()):
+        for k, v in features.items():
             if isinstance(v, _ArrayXD):
                 data = np.random.rand(*v.shape).astype(v.dtype)
             elif isinstance(v, datasets.Value):
-                if v.dtype == "string":
-                    data = "The small grey turtle was surprisingly fast when challenged."
-                else:
-                    data = np.random.randint(10, size=1).astype(v.dtype).item()
+                data = (
+                    "The small grey turtle was surprisingly fast when challenged."
+                    if v.dtype == "string"
+                    else np.random.randint(10, size=1).astype(v.dtype).item()
+                )
+
             elif isinstance(v, datasets.Sequence):
                 while isinstance(v, datasets.Sequence):
                     v = v.feature
@@ -57,6 +59,6 @@ def generate_example_dataset(dataset_path, features, num_examples=100, seq_shape
         num_final_examples == num_examples
     ), f"Error writing the dataset, wrote {num_final_examples} examples but should have written {num_examples}."
 
-    dataset = datasets.Dataset.from_file(filename=dataset_path, info=datasets.DatasetInfo(features=features))
-
-    return dataset
+    return datasets.Dataset.from_file(
+        filename=dataset_path, info=datasets.DatasetInfo(features=features)
+    )

@@ -99,13 +99,10 @@ class Art(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath, labelpath):
         """Yields examples."""
         # TODO(art): Yields (key, example) tuples from the dataset
-        data = []
-        for line in open(filepath, encoding="utf-8"):
-            data.append(json.loads(line))
+        data = [json.loads(line) for line in open(filepath, encoding="utf-8")]
         labels = []
         with open(labelpath, encoding="utf-8") as f:
-            for word in f:
-                labels.append(word)
+            labels.extend(iter(f))
         for idx, row in enumerate(data):
             yield idx, {
                 "observation_1": row["obs1"],

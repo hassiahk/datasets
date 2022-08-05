@@ -171,8 +171,7 @@ class Norwegianner(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, filepath):
         with open(filepath, "r", encoding="utf-8") as data_file:
             tokenlist = list(conllu.parse_incr(data_file))
-            id = 0
-            for sent in tokenlist:
+            for id, sent in enumerate(tokenlist):
                 yield id, {
                     "idx": sent.metadata["sent_id"],
                     "text": sent.metadata["text"],
@@ -181,4 +180,3 @@ class Norwegianner(datasets.GeneratorBasedBuilder):
                     "pos_tags": [token["upos"] for token in sent],
                     "ner_tags": [token["xpos"] for token in sent],
                 }
-                id += 1

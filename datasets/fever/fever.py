@@ -177,7 +177,7 @@ class Fever(datasets.GeneratorBasedBuilder):
 
     def _generate_examples(self, filepath):
         """Yields examples."""
-        if self.config.name == "v1.0" or self.config.name == "v2.0":
+        if self.config.name in ["v1.0", "v2.0"]:
             with open(filepath, encoding="utf-8") as f:
                 for row_id, row in enumerate(f):
                     data = json.loads(row)
@@ -188,19 +188,23 @@ class Fever(datasets.GeneratorBasedBuilder):
                     if len(evidences) > 0:
                         for i in range(len(evidences)):
                             for j in range(len(evidences[i])):
-                                annot_id = evidences[i][j][0] if evidences[i][j][0] else -1
-                                evidence_id = evidences[i][j][1] if evidences[i][j][1] else -1
-                                wiki_url = evidences[i][j][2] if evidences[i][j][2] else ""
-                                sent_id = evidences[i][j][3] if evidences[i][j][3] else -1
-                                yield str(row_id) + "_" + str(i) + "_" + str(j), {
-                                    "id": id_,
-                                    "label": label,
-                                    "claim": claim,
-                                    "evidence_annotation_id": annot_id,
-                                    "evidence_id": evidence_id,
-                                    "evidence_wiki_url": wiki_url,
-                                    "evidence_sentence_id": sent_id,
-                                }
+                                annot_id = evidences[i][j][0] or -1
+                                evidence_id = evidences[i][j][1] or -1
+                                wiki_url = evidences[i][j][2] or ""
+                                sent_id = evidences[i][j][3] or -1
+                                yield (
+                                    f"{str(row_id)}_{str(i)}_{str(j)}",
+                                    {
+                                        "id": id_,
+                                        "label": label,
+                                        "claim": claim,
+                                        "evidence_annotation_id": annot_id,
+                                        "evidence_id": evidence_id,
+                                        "evidence_wiki_url": wiki_url,
+                                        "evidence_sentence_id": sent_id,
+                                    },
+                                )
+
                     else:
                         yield row_id, {
                             "id": id_,

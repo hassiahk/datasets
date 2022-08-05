@@ -15,6 +15,7 @@
 """Neural-Code-Search-Evaluation-Dataset presents an evaluation dataset consisting of natural language query and code snippet pairs"""
 
 
+
 import json
 import os
 
@@ -47,9 +48,9 @@ _LICENSE = "CC-BY-NC 4.0 (Attr Non-Commercial Inter.)"
 
 _BASE_URL = "https://raw.githubusercontent.com/facebookresearch/Neural-Code-Search-Evaluation-Dataset/master/data/"
 _URLs = {
-    "evaluation_dataset": _BASE_URL + "287_android_questions.json",
-    "search_corpus_1": _BASE_URL + "search_corpus_1.tar.gz",
-    "search_corpus_2": _BASE_URL + "search_corpus_2.tar.gz",
+    "evaluation_dataset": f"{_BASE_URL}287_android_questions.json",
+    "search_corpus_1": f"{_BASE_URL}search_corpus_1.tar.gz",
+    "search_corpus_2": f"{_BASE_URL}search_corpus_2.tar.gz",
 }
 
 

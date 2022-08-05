@@ -1,6 +1,7 @@
 """TODO(hellaswag): Add a description here."""
 
 
+
 import json
 
 import datasets
@@ -21,9 +22,9 @@ _DESCRIPTION = """
 """
 _URL = "https://github.com/rowanz/hellaswag/raw/master/data/"
 _URLS = {
-    "train": _URL + "hellaswag_train.jsonl",
-    "test": _URL + "hellaswag_test.jsonl",
-    "dev": _URL + "hellaswag_val.jsonl",
+    "train": f"{_URL}hellaswag_train.jsonl",
+    "test": f"{_URL}hellaswag_test.jsonl",
+    "dev": f"{_URL}hellaswag_val.jsonl",
 }
 
 

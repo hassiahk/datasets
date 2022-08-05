@@ -1,6 +1,7 @@
 """TODO(commonsense_qa): Add a description here."""
 
 
+
 import json
 
 import datasets
@@ -26,9 +27,9 @@ CommonsenseQA is a new multiple-choice question answering dataset that requires 
 
 _URL = "https://s3.amazonaws.com/commensenseqa/"
 _URLS = {
-    "train": _URL + "train_rand_split.jsonl",
-    "dev": _URL + "dev_rand_split.jsonl",
-    "test": _URL + "test_rand_split_no_answers.jsonl",
+    "train": f"{_URL}train_rand_split.jsonl",
+    "dev": f"{_URL}dev_rand_split.jsonl",
+    "test": f"{_URL}test_rand_split_no_answers.jsonl",
 }
 
 
@@ -104,11 +105,7 @@ class CommonsenseQa(datasets.GeneratorBasedBuilder):
                 labels = [label["label"] for label in choices]
                 texts = [text["text"] for text in choices]
                 stem = question["stem"]
-                if split == "test":
-                    answerkey = ""
-                else:
-                    answerkey = data["answerKey"]
-
+                answerkey = "" if split == "test" else data["answerKey"]
                 yield id_, {
                     "answerKey": answerkey,
                     "question": stem,

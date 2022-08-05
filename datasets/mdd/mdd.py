@@ -15,6 +15,7 @@
 """Movie Dialog Dataset."""
 
 
+
 import os
 
 import datasets
@@ -50,19 +51,19 @@ dir = "movie_dialog_dataset/"
 dir2 = ""
 paths = {
     "task1_qa": {
-        "train": dir + "task1_qa/task1_qa_train.txt",
-        "dev": dir + "task1_qa/task1_qa_dev.txt",
-        "test": dir + "task1_qa/task1_qa_test.txt",
+        "train": f"{dir}task1_qa/task1_qa_train.txt",
+        "dev": f"{dir}task1_qa/task1_qa_dev.txt",
+        "test": f"{dir}task1_qa/task1_qa_test.txt",
     },
     "task2_recs": {
-        "train": dir + "task2_recs/task2_recs_train.txt",
-        "dev": dir + "task2_recs/task2_recs_dev.txt",
-        "test": dir + "task2_recs/task2_recs_test.txt",
+        "train": f"{dir}task2_recs/task2_recs_train.txt",
+        "dev": f"{dir}task2_recs/task2_recs_dev.txt",
+        "test": f"{dir}task2_recs/task2_recs_test.txt",
     },
     "task3_qarecs": {
-        "train": dir + "task3_qarecs/task3_qarecs_train.txt",
-        "dev": dir + "task3_qarecs/task3_qarecs_dev.txt",
-        "test": dir + "task3_qarecs/task3_qarecs_test.txt",
+        "train": f"{dir}task3_qarecs/task3_qarecs_train.txt",
+        "dev": f"{dir}task3_qarecs/task3_qarecs_dev.txt",
+        "test": f"{dir}task3_qarecs/task3_qarecs_test.txt",
     },
     "task4_reddit": {
         "train": "task4_reddit/task4_reddit_train.txt",
@@ -130,10 +131,7 @@ class Mdd(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-        if self.config.name != "task4_reddit":
-            my_urls = ZIP_URL  # Cannot download just one single type as it is a compressed file.
-        else:
-            my_urls = REDDIT_URL
+        my_urls = ZIP_URL if self.config.name != "task4_reddit" else REDDIT_URL
         data_dir = dl_manager.download_and_extract(my_urls)
         splits = [
             datasets.SplitGenerator(
@@ -182,7 +180,7 @@ class Mdd(datasets.GeneratorBasedBuilder):
             with open(filepath, encoding="utf-8") as f:
                 dialogue_turns = []
                 example_idx = 0
-                for idx, line in enumerate(f):
+                for line in f:
                     if line.strip() == "":
                         if dialogue_turns != []:
                             yield example_idx, {"dialogue_turns": dialogue_turns}
@@ -204,14 +202,13 @@ class Mdd(datasets.GeneratorBasedBuilder):
                         sp2 = exchange[-1]  # Might contain multiple tabs in between.
                         dialogue_turns.append({"speaker": 0, "utterance": sp1})
                         dialogue_turns.append({"speaker": 1, "utterance": sp2})
-                else:
-                    if dialogue_turns != []:
-                        yield example_idx, {"dialogue_turns": dialogue_turns}
+                if dialogue_turns != []:
+                    yield example_idx, {"dialogue_turns": dialogue_turns}
         else:
             with open(filepath, encoding="utf-8") as f:
                 dialogue_turns = []
                 example_idx = 0
-                for idx, line in enumerate(f):
+                for line in f:
                     if line.strip() == "":
                         if dialogue_turns != []:
                             yield example_idx, {"dialogue_turns": dialogue_turns}
@@ -229,6 +226,5 @@ class Mdd(datasets.GeneratorBasedBuilder):
                         exchange = line[len(line.split()[0]) :].strip()  # Skip the number in the front
                         sp1 = exchange
                         dialogue_turns.append({"speaker": 0, "utterance": sp1})
-                else:  # Last line, new example
-                    if dialogue_turns != []:
-                        yield example_idx, {"dialogue_turns": dialogue_turns}
+                if dialogue_turns != []:
+                    yield example_idx, {"dialogue_turns": dialogue_turns}

@@ -130,9 +130,14 @@ class Best2009(datasets.GeneratorBasedBuilder):
                             char_types.append(self._CHAR_TYPE_FLATTEN.get(token[i], "o"))
                             is_beginning = 1 if i == 0 else 0
                             is_beginnings.append(is_beginning)
-                    yield f"{file_idx}_{line_idx}", {
-                        "fname": fname.name,
-                        "char": chars,
-                        "char_type": char_types,
-                        "is_beginning": is_beginnings if split == "train" else [0 for i in range(len(chars))],
-                    }
+                    yield (
+                        f"{file_idx}_{line_idx}",
+                        {
+                            "fname": fname.name,
+                            "char": chars,
+                            "char_type": char_types,
+                            "is_beginning": is_beginnings
+                            if split == "train"
+                            else [0 for _ in range(len(chars))],
+                        },
+                    )

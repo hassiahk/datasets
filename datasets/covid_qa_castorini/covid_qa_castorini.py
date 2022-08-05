@@ -15,6 +15,7 @@
 """CovidQA, a question answering dataset specifically designed for COVID-19."""
 
 
+
 import json
 
 import datasets
@@ -42,7 +43,7 @@ _HOMEPAGE = "http://covidqa.ai"
 _LICENSE = "Apache License 2.0"
 
 _URL = "https://raw.githubusercontent.com/castorini/pygaggle/master/data/"
-_URLs = {"covid_qa_castorini": _URL + "kaggle-lit-review-0.2.json"}
+_URLs = {"covid_qa_castorini": f"{_URL}kaggle-lit-review-0.2.json"}
 
 
 class CovidQaCastorini(datasets.GeneratorBasedBuilder):
